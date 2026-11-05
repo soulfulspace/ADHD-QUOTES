@@ -3,28 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <title>300 ADHD-Friendly Affirmations · Notion Widget</title>
+<script>
+(function () {
+  let saved = null;
+  for (const name of ['localStorage', 'sessionStorage']) {
+    try { saved = window[name].getItem('adhd-widget-theme'); } catch (_) {}
+    if (saved === 'light' || saved === 'dark') break;
+  }
+  const theme = saved === 'light' || saved === 'dark' ? saved :
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
 <style>
-  :root { --ink:#463a37; --muted:#8c7774; --line:#e8dad6; --warm:#fdf9f7; --accent:#c89d97; }
+   :root { color-scheme:light; --ink:#463a37; --muted:#79635f; --line:#e8dad6; --warm:#fffaf8; --accent:#c89d97; --surface:linear-gradient(150deg,#fffdfc 0%,#fbf1ed 100%); --tag-ink:#835b59; --tag-bg:#f5e4e1; --button-ink:#785e59; --hover:#f4e7e2; --primary:#95655e; --primary-hover:#82564f; --focus:#a46d6a; --page:transparent; }
+  :root[data-theme="dark"] { color-scheme:dark; --ink:#f6eeeb; --muted:#c2aaa4; --line:#51413d; --warm:#302725; --accent:#d3aaa2; --surface:linear-gradient(150deg,#292321 0%,#332724 100%); --tag-ink:#f0c8c1; --tag-bg:#4a3430; --button-ink:#e7c7c0; --hover:#493632; --primary:#d3aaa2; --primary-hover:#e5bfb7; --focus:#e4b7ae; --page:#191919; }
   * { box-sizing:border-box; }
-  body { margin:0; background:transparent; font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif; color:var(--ink); }
-  .widget { width:100%; max-width:570px; min-height:300px; margin:0 auto; padding:24px; border:1px solid var(--line); border-radius:22px; background:linear-gradient(150deg,#fffdfc 0%,#fbf1ed 100%); display:flex; flex-direction:column; gap:18px; }
+  body { margin:0; background:var(--page); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif; color:var(--ink); }
+  .widget { width:100%; max-width:570px; min-height:300px; margin:0 auto; padding:24px; border:1px solid var(--line); border-radius:22px; background:var(--surface); display:flex; flex-direction:column; gap:18px; }
   .top { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
-  .tag { font-size:12px; font-weight:650; letter-spacing:.02em; color:#835b59; background:#f5e4e1; border-radius:100px; padding:6px 11px; }
+  .tag { font-size:12px; font-weight:650; letter-spacing:.02em; color:var(--tag-ink); background:var(--tag-bg); border-radius:100px; padding:6px 11px; }
   label { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); }
-  select { max-width:155px; color:var(--ink); background:#fffaf8; border:1px solid var(--line); border-radius:10px; font:inherit; font-size:12px; padding:6px 8px; cursor:pointer; }
+  select { max-width:155px; color:var(--ink); background:var(--warm); border:1px solid var(--line); border-radius:10px; font:inherit; font-size:12px; padding:6px 8px; cursor:pointer; }
   .body { flex:1; display:flex; flex-direction:column; justify-content:center; min-height:140px; }
   .quote { margin:0 0 11px; font-size:clamp(20px,4.2vw,26px); font-weight:650; letter-spacing:-.025em; line-height:1.42; text-wrap:balance; }
   .hint { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
   .bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
   .count { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
   .controls { display:flex; gap:7px; flex-wrap:wrap; }
-  button { border:1px solid var(--line); background:#fffaf8; border-radius:12px; padding:9px 12px; color:#785e59; font:inherit; font-size:12px; font-weight:650; cursor:pointer; transition:background-color .15s; }
-  button.primary { background:#c89d97; border-color:#c89d97; color:#fff; }
-  button:hover { background:#f4e7e2; }
-  button.primary:hover { background:#b98b85; }
-  button:focus-visible, select:focus-visible { outline:3px solid #a46d6a; outline-offset:2px; }
+  button { border:1px solid var(--line); background:var(--warm); border-radius:12px; padding:9px 12px; color:var(--button-ink); font:inherit; font-size:12px; font-weight:650; cursor:pointer; transition:background-color .15s; }
+  button.primary { background:var(--primary); border-color:var(--primary); color:#fff; }
+  button:hover { background:var(--hover); }
+  button.primary:hover { background:var(--primary-hover); }
+  :root[data-theme="dark"] button.primary { color:#241b19; }
+  .top-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .theme-toggle { padding:6px 9px; border-radius:10px; font-size:12px; white-space:nowrap; }
+  button:focus-visible, select:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
   button:disabled { opacity:.5; cursor:not-allowed; }
   @media(max-width:420px) { .widget { padding:18px; border-radius:18px; min-height:285px; } .bottom { align-items:flex-start; } .controls { width:100%; } .controls button { flex:1; } }
   @media(prefers-reduced-motion:reduce) { *,*:before,*:after { transition:none!important; } }
@@ -34,11 +50,14 @@
 <main class="widget" aria-label="ADHD-friendly affirmations widget">
   <div class="top">
     <span class="tag" id="categoryTag">Gentle reminder ✦</span>
+    <div class="top-actions">
     <label for="category">Topic
       <select id="category" aria-label="Filter affirmations by topic">
         <option value="All">All topics</option>
       </select>
     </label>
+    <button type="button" id="theme" class="theme-toggle" aria-label="Switch to dark mode">☾ Dark</button>
+    </div>
   </div>
   <div class="body" aria-live="polite" aria-atomic="true">
     <p class="quote" id="quote"></p>
@@ -65,6 +84,37 @@ const topicSelect = document.getElementById('category');
 const backButton = document.getElementById('previous');
 const copyButton = document.getElementById('copy');
 const nextButton = document.getElementById('next');
+const themeButton = document.getElementById('theme');
+function readPreference(key) {
+  for (const name of ['localStorage', 'sessionStorage']) {
+    try { const value = window[name].getItem(key); if (value !== null) return value; } catch (_) {}
+  }
+  return null;
+}
+function savePreference(key, value) {
+  for (const name of ['localStorage', 'sessionStorage']) {
+    try { window[name].setItem(key, value); } catch (_) {}
+  }
+}
+function renderTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  themeButton.textContent = dark ? '☀ Light' : '☾ Dark';
+  themeButton.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+}
+themeButton.addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = theme;
+  savePreference('adhd-widget-theme', theme);
+  renderTheme();
+});
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+if (systemTheme.addEventListener) systemTheme.addEventListener('change', event => {
+  if (!readPreference('adhd-widget-theme')) {
+    document.documentElement.dataset.theme = event.matches ? 'dark' : 'light';
+    renderTheme();
+  }
+});
+renderTheme();
 Object.keys(hints).forEach(topic => {
   const opt = document.createElement('option'); opt.value = topic; opt.textContent = topic;
   topicSelect.appendChild(opt);
@@ -84,6 +134,11 @@ function shuffle(items) {
 function resetTopic() {
   eligible = quotes.map((item,index) => ({...item,index})).filter(item => topicSelect.value === 'All' || item.category === topicSelect.value);
   deck = shuffle(eligible.map(item => item.index));
+  // Make the first quote different from the last one viewed before refresh.
+  const lastQuote = readPreference('adhd-widget-last-quote');
+  if (deck.length > 1 && quotes[deck[deck.length - 1]].quote === lastQuote) {
+    [deck[deck.length - 1], deck[0]] = [deck[0], deck[deck.length - 1]];
+  }
   history = [];
   historyPos = -1;
   showNext();
@@ -91,6 +146,7 @@ function resetTopic() {
 function render() {
   const item = quotes[history[historyPos]];
   quoteEl.textContent = item.quote;
+  savePreference('adhd-widget-last-quote', item.quote);
   hintEl.textContent = hints[item.category];
   categoryTag.textContent = item.category + ' ✦';
   const shown = historyPos + 1;
