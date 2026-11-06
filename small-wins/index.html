@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A little place for the things you did. A private, browser-saved small wins jar for Notion.">
+<title>Small wins jar · Notion widget</title>
+<script>
+(() => {
+  let saved;
+  try { saved = localStorage.getItem('small-wins-theme-v1'); } catch (_) {}
+  document.documentElement.dataset.theme = ['light','dark'].includes(saved) ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+})();
+</script>
+<style>
+  :root { color-scheme:light; --page:transparent; --paper:#fff; --ink:#111; --muted:#666; --line:#dedede; --soft:#f5f5f5; --hover:#ebebeb; --strong:#111; --on-strong:#fff; --note:#fff; }
+  :root[data-theme="dark"] { color-scheme:dark; --page:#191919; --paper:#111; --ink:#f5f5f5; --muted:#b3b3b3; --line:#3d3d3d; --soft:#202020; --hover:#2c2c2c; --strong:#fff; --on-strong:#111; --note:#252525; }
+  * { box-sizing:border-box; }
+  [hidden] { display:none!important; }
+  body { margin:0; padding:1px; background:var(--page); color:var(--ink); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+  button,textarea { font:inherit; }
+  button { cursor:pointer; color:var(--ink); border:1px solid var(--line); border-radius:11px; padding:10px 13px; background:var(--paper); }
+  button:hover { background:var(--hover); }
+  button:disabled { opacity:.42; cursor:default; }
+  button:focus-visible,textarea:focus-visible,summary:focus-visible { outline:2px solid var(--ink); outline-offset:4px; }
+  .widget { max-width:650px; margin:0 auto; padding:25px 27px 18px; border:1px solid var(--line); border-radius:23px; background:var(--paper); }
+  header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .eyebrow { margin:0 0 5px; color:var(--muted); font-size:9px; letter-spacing:.17em; font-weight:650; }
+  h1 { margin:0; font-size:24px; line-height:1.25; letter-spacing:-.045em; font-weight:650; }
+  .theme { padding:6px 9px; border-radius:9px; font-size:11px; white-space:nowrap; }
+  .intro { color:var(--muted); margin:9px 0 0; font-size:12px; }
+  .main { display:grid; grid-template-columns:190px 1fr; align-items:center; gap:27px; margin:18px 0 20px; }
+  .jar-area { text-align:center; }
+  .jar-button { display:block; padding:0; border:0; background:transparent!important; width:180px; height:211px; margin:0 auto; border-radius:24px; }
+  .jar-button:disabled { opacity:1; }
+  .jar-button:not(:disabled):hover svg { transform:rotate(-2deg); }
+  .jar-button svg { display:block; width:100%; height:100%; color:var(--ink); transition:transform .2s ease; overflow:visible; }
+  .jar-label { color:var(--muted); font-size:11px; margin:5px 0 0; }
+  .empty-mark { fill:none; stroke:var(--line); stroke-width:1.5; }
+  .paper-slip { fill:var(--note); stroke:var(--ink); stroke-width:1.3; }
+  form label { display:block; font-size:13px; font-weight:600; margin-bottom:8px; }
+  textarea { display:block; width:100%; resize:vertical; min-height:92px; max-height:180px; background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:12px; color:var(--ink); line-height:1.5; font-size:13px; }
+  textarea::placeholder { color:var(--muted); opacity:1; }
+  .prompt { border:0; padding:5px 0; border-radius:4px; background:transparent!important; font-size:11px; color:var(--muted); text-align:left; margin:5px 0 9px; text-decoration:underline; text-underline-offset:3px; }
+  .primary { background:var(--strong); color:var(--on-strong); border-color:var(--strong); font-size:12px; font-weight:600; }
+  .primary:hover { background:var(--ink); }
+  .add { width:100%; }
+  .actions { border-top:1px solid var(--line); padding-top:15px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .revisit { font-size:12px; padding:8px 11px; }
+  .gentle { font-size:11px; color:var(--muted); margin:0; }
+  .memory { margin-top:17px; border:1px solid var(--line); background:var(--soft); padding:18px; border-radius:13px; }
+  .memory-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+  .memory-top span { font-size:9px; text-transform:uppercase; letter-spacing:.13em; color:var(--muted); }
+  .icon { padding:0 4px; border:0; font-size:21px; line-height:1; background:transparent; }
+  blockquote { margin:0; font-size:18px; line-height:1.45; font-weight:550; letter-spacing:-.02em; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .date { display:block; margin-top:10px; color:var(--muted); font-size:10px; }
+  .status-line { display:flex; align-items:center; gap:9px; min-height:27px; margin-top:6px; }
+  #status { font-size:11px; color:var(--muted); margin:0; }
+  .undo { padding:0; border:0; text-decoration:underline; font-size:11px; background:transparent!important; }
+  details { margin-top:5px; }
+  summary { cursor:pointer; color:var(--muted); font-size:11px; padding:5px 0; width:max-content; }
+  ul { list-style:none; padding:0; margin:9px 0 0; max-height:230px; overflow:auto; overscroll-behavior:contain; }
+  li { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line); }
+  .win-copy { flex:1; min-width:0; }
+  .win-copy p { margin:0; font-size:13px; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .win-copy time { font-size:10px; color:var(--muted); }
+  .remove { flex:none; padding:4px 7px; border:0; background:transparent; font-size:17px; color:var(--muted); }
+  .list-empty { font-size:12px; color:var(--muted); margin:8px 0; }
+  footer { display:flex; flex-wrap:wrap; gap:5px 12px; align-items:center; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:10px; }
+  footer button { border:0; background:transparent!important; padding:0; color:var(--muted); font-size:10px; text-decoration:underline; text-underline-offset:3px; }
+  #storage-warning { background:var(--soft); padding:10px; border:1px solid var(--line); border-radius:9px; font-size:11px; margin:12px 0 0; }
+  @media(max-width:480px) { .widget { padding:20px 18px 15px; } .main { grid-template-columns:125px 1fr; gap:14px; } .jar-button { width:125px; height:165px; } .jar-label { font-size:10px; } h1 { font-size:22px; } .gentle { max-width:145px; } }
+  @media(max-width:345px) { .main { grid-template-columns:1fr; gap:14px; } .jar-button { width:125px; height:145px; } .jar-label { margin-top:0; } .actions { align-items:flex-start; } }
+  @media(prefers-reduced-motion:reduce) { * { transition:none!important; } }
+</style>
+</head>
+<body>
+<main class="widget" aria-label="Small wins jar">
+  <header>
+    <div><p class="eyebrow">EVERY LITTLE THING COUNTS</p><h1>Small wins jar</h1></div>
+    <button class="theme" id="theme" type="button" aria-label="Switch to dark mode">☾ Dark</button>
+  </header>
+  <p class="intro">A little place for the things you did.</p>
+  <div class="main">
+    <div class="jar-area">
+      <button class="jar-button" id="jar" type="button" aria-label="Pick a win from your jar" disabled>
+        <svg viewBox="0 0 180 211" aria-hidden="true">
+          <defs><clipPath id="jar-inside"><path d="M40 58 Q27 67 27 83 V181 Q27 197 43 197 H137 Q153 197 153 181 V83 Q153 67 140 58 Z"/></clipPath></defs>
+          <path d="M42 42 V56 Q21 65 21 85 V181 Q21 203 43 203 H137 Q159 203 159 181 V85 Q159 65 138 56 V42" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+          <rect x="35" y="24" width="110" height="20" rx="5" fill="var(--soft)" stroke="currentColor" stroke-width="2.3"/>
+          <path d="M46 29 V39 M57 29 V39 M68 29 V39 M79 29 V39 M90 29 V39 M101 29 V39 M112 29 V39 M123 29 V39 M134 29 V39" fill="none" stroke="currentColor" stroke-width="1"/>
+          <path d="M29 88 V167 M151 103 V174" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+          <g id="slips" clip-path="url(#jar-inside)"></g>
+          <g id="empty-jar"><rect class="empty-mark" x="65" y="106" width="50" height="35" rx="3" transform="rotate(-9 90 123)"/><path d="M84 123 H96 M90 117 V129" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g>
+          <path d="M12 68 V78 M7 73 H17 M165 143 V153 M160 148 H170" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <p class="jar-label" id="jar-label">Your first win belongs here.</p>
+    </div>
+    <form id="win-form">
+      <label for="win">What went well?</label>
+      <textarea id="win" maxlength="500" rows="3" placeholder="I did the thing I was putting off." required></textarea>
+      <button class="prompt" id="prompt" type="button">Need a little inspiration?</button>
+      <button class="primary add" id="add" type="submit" disabled>Add to my jar +</button>
+    </form>
+  </div>
+  <div class="actions"><p class="gentle">It doesn't have to be big to matter.</p><button class="revisit" id="revisit" type="button" disabled>Revisit a win ↗</button></div>
+  <section class="memory" id="memory" aria-label="A win worth remembering" hidden>
+    <div class="memory-top"><span>A WIN WORTH REMEMBERING</span><button class="icon" id="close-memory" type="button" aria-label="Close remembered win">×</button></div>
+    <blockquote id="memory-text"></blockquote><time class="date" id="memory-date"></time>
+  </section>
+  <div class="status-line"><p id="status" role="status" aria-live="polite"></p><button class="undo" id="undo" type="button" hidden>Undo</button></div>
+  <details id="all-wins"><summary>All my wins</summary><p class="list-empty" id="list-empty">A blank jar is a lovely place to start.</p><ul id="win-list" aria-label="Saved wins"></ul></details>
+  <p id="storage-warning" role="alert" hidden>This browser couldn't save your wins. Download a backup before closing this widget.</p>
+  <footer><span id="save-note" title="Wins stay in this browser. They do not sync to Notion or other devices.">Saved in this browser</span><div><button id="import" type="button">Restore backup</button><span aria-hidden="true"> · </span><button id="export" type="button" disabled>Download backup</button></div></footer>
+  <input type="file" id="import-file" accept="application/json,.json" hidden>
+</main>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const STORAGE = 'small-wins-jar-v1';
+const THEME = 'small-wins-theme-v1';
+const MAX_WINS = 5000;
+let wins = [];
+let selectedId = null;
+let removed = null;
+let storageAvailable = true;
+function isWin(win) {
+  return win && typeof win.id === 'string' && win.id.length > 0 && win.id.length < 100 && typeof win.text === 'string' && win.text.trim().length > 0 && win.text.length <= 500 && typeof win.createdAt === 'string' && Number.isFinite(Date.parse(win.createdAt));
+}
+function parseWins(raw) {
+  const data = JSON.parse(raw);
+  const items = Array.isArray(data) ? data : data && data.wins;
+  if (!Array.isArray(items) || items.length > MAX_WINS || !items.every(isWin) || new Set(items.map(w => w.id)).size !== items.length) throw Error('Invalid backup');
+  return items.map(({id,text,createdAt}) => ({id,text:text.trim(),createdAt}));
+}
+function storageWarning() {
+  storageAvailable = false;
+  $('storage-warning').hidden = false;
+  $('save-note').textContent = 'Not saved — download a backup';
+}
+try { const saved = localStorage.getItem(STORAGE); if (saved !== null) wins = parseWins(saved); }
+catch (_) { storageWarning(); }
+function save() {
+  try { localStorage.setItem(STORAGE, JSON.stringify({version:1,wins})); storageAvailable = true; $('storage-warning').hidden = true; $('save-note').textContent = 'Saved in this browser'; return true; }
+  catch (_) { storageWarning(); return false; }
+}
+function say(text) { $('status').textContent = text; }
+function dateLabel(iso) { return new Intl.DateTimeFormat(undefined,{day:'numeric',month:'short',year:'numeric'}).format(new Date(iso)); }
+function makeId() { return globalThis.crypto && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); }
+function makeSvg(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for (const [key,value] of Object.entries(attrs)) el.setAttribute(key,String(value));
+  return el;
+}
+function drawJar() {
+  const group = $('slips'); group.replaceChildren();
+  const visible = wins.slice(-18);
+  visible.forEach((win,i) => {
+    const column = i % 3, row = Math.floor(i/3);
+    const x = 36 + column*33 + (row%2 ? 4 : 0), y = 175 - row*20;
+    const angle = [-13,8,-5,11,-9,5][i%6];
+    const slip = makeSvg('g',{transform:`rotate(${angle} ${x+19} ${y+10})`});
+    slip.append(makeSvg('rect',{x,y,width:37,height:22,rx:2.5,class:'paper-slip'}));
+    slip.append(makeSvg('path',{d:`M${x+9} ${y+8} h19 M${x+9} ${y+13} h12`,fill:'none',stroke:'currentColor','stroke-width':1,opacity:.55}));
+    group.append(slip);
+  });
+  $('empty-jar').hidden = wins.length > 0;
+  // SVG groups do not consistently implement the HTML hidden attribute.
+  $('empty-jar').setAttribute('display', wins.length ? 'none' : 'inline');
+  $('jar-label').textContent = wins.length ? 'Little reminders. Real progress.' : 'Your first win belongs here.';
+}
+function render() {
+  drawJar();
+  $('revisit').disabled = $('jar').disabled = $('export').disabled = wins.length === 0;
+  $('add').disabled = !$('win').value.trim() || wins.length >= MAX_WINS;
+  $('list-empty').hidden = wins.length > 0;
+  $('undo').hidden = !removed;
+  const list = $('win-list'); list.replaceChildren();
+  [...wins].reverse().forEach(win => {
+    const item = document.createElement('li');
+    const content = document.createElement('div'); content.className='win-copy';
+    const text = document.createElement('p'); text.textContent = win.text;
+    const date = document.createElement('time'); date.dateTime = win.createdAt; date.textContent = dateLabel(win.createdAt);
+    content.append(text,date);
+    const button = document.createElement('button'); button.className='remove'; button.type='button'; button.textContent='×'; button.setAttribute('aria-label','Remove win: ' + win.text.slice(0,70));
+    button.addEventListener('click',() => removeWin(win.id));
+    item.append(content,button); list.append(item);
+  });
+  const selected = wins.find(win => win.id === selectedId);
+  $('memory').hidden = !selected;
+  if (selected) { $('memory-text').textContent = selected.text; $('memory-date').textContent = dateLabel(selected.createdAt); $('memory-date').dateTime = selected.createdAt; }
+}
+function addWin(text) {
+  const clean = text.trim();
+  if (!clean || clean.length > 500 || wins.length >= MAX_WINS) return false;
+  wins.push({id:makeId(),text:clean,createdAt:new Date().toISOString()});
+  const saved = save(); $('win').value=''; render();
+  say(saved ? 'Tucked away. This one counts, too.' : 'Added for now. Download a backup to keep it.');
+  return true;
+}
+function pickWin() {
+  if (!wins.length) return;
+  const eligible = wins.length > 1 ? wins.filter(win => win.id !== selectedId) : wins;
+  selectedId = eligible[Math.floor(Math.random()*eligible.length)].id;
+  render(); say('A little reminder of what you can do.');
+}
+function removeWin(id) {
+  const index = wins.findIndex(win => win.id === id); if (index < 0) return;
+  removed = {win:wins[index],index}; wins.splice(index,1);
+  if (selectedId === id) selectedId = null;
+  save(); render(); say('Win removed. You can undo that.');
+  $('undo').focus();
+}
+function undoRemove() {
+  if (!removed) return;
+  wins.splice(Math.min(removed.index,wins.length),0,removed.win); removed = null;
+  save(); render(); say('Your win is back in the jar.');
+}
+$('win-form').addEventListener('submit',event => { event.preventDefault(); if(addWin($('win').value)) $('win').focus(); });
+$('win').addEventListener('input',() => { $('add').disabled = !$('win').value.trim() || wins.length >= MAX_WINS; });
+const prompts = ['I made a start on…','I took care of myself by…','I asked for help with…','I made time for…','I kept going when…','I let myself rest after…'];
+let promptIndex = -1;
+$('prompt').addEventListener('click',() => { promptIndex=(promptIndex+1)%prompts.length; $('win').placeholder=prompts[promptIndex]; $('win').focus(); });
+$('jar').addEventListener('click',pickWin); $('revisit').addEventListener('click',pickWin);
+$('undo').addEventListener('click',undoRemove);
+$('close-memory').addEventListener('click',() => { selectedId=null; render(); $('revisit').focus(); });
+function renderTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  $('theme').textContent = dark ? '☀ Light' : '☾ Dark';
+  $('theme').setAttribute('aria-label',dark ? 'Switch to light mode' : 'Switch to dark mode');
+}
+$('theme').addEventListener('click',() => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme=theme;
+  try { localStorage.setItem(THEME,theme); } catch (_) {}
+  renderTheme();
+});
+const system = matchMedia('(prefers-color-scheme: dark)');
+if(system.addEventListener) system.addEventListener('change',event => {
+  try { if(localStorage.getItem(THEME)) return; } catch (_) {}
+  document.documentElement.dataset.theme=event.matches?'dark':'light'; renderTheme();
+});
+$('export').addEventListener('click',() => {
+  const file = new Blob([JSON.stringify({version:1,wins},null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(file), link = document.createElement('a');
+  link.href=url; link.download='my-small-wins-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url),1000);
+  say('Backup downloaded. Keep it somewhere safe.');
+});
+$('import').addEventListener('click',() => $('import-file').click());
+$('import-file').addEventListener('change',async event => {
+  const file = event.target.files[0]; if(!file) return;
+  try {
+    if(file.size > 5000000) throw Error('Too large');
+    const incoming = parseWins(await file.text());
+    const existing = new Set(wins.map(win=>win.id));
+    const fresh = incoming.filter(win=>!existing.has(win.id));
+    if(wins.length + fresh.length > MAX_WINS) throw Error('Too many wins');
+    wins.push(...fresh); wins.sort((a,b)=>Date.parse(a.createdAt)-Date.parse(b.createdAt));
+    const saved = save(); render();
+    say(fresh.length ? (saved ? 'Your memories are back in the jar.' : 'Restored for now. Download a backup before closing.') : 'Those wins are already in your jar.');
+  } catch (_) { say('That backup could not be restored. Choose a Small Wins Jar JSON backup.'); }
+  event.target.value='';
+});
+window.addEventListener('storage',event => {
+  if(event.key!==STORAGE) return;
+  try { wins=event.newValue===null?[]:parseWins(event.newValue); removed=null; render(); }
+  catch (_) { say('The saved jar could not be read. Download a backup of your current wins.'); }
+});
+renderTheme(); render();
+</script>
+</body>
+</html>
