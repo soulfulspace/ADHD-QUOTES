@@ -18,8 +18,8 @@
 })();
 </script>
 <style>
-   :root { color-scheme:light; --ink:#463a37; --muted:#79635f; --line:#e8dad6; --warm:#fffaf8; --accent:#c89d97; --surface:linear-gradient(150deg,#fffdfc 0%,#fbf1ed 100%); --tag-ink:#835b59; --tag-bg:#f5e4e1; --button-ink:#785e59; --hover:#f4e7e2; --primary:#95655e; --primary-hover:#82564f; --focus:#a46d6a; --page:transparent; }
-  :root[data-theme="dark"] { color-scheme:dark; --ink:#f6eeeb; --muted:#c2aaa4; --line:#51413d; --warm:#302725; --accent:#d3aaa2; --surface:linear-gradient(150deg,#292321 0%,#332724 100%); --tag-ink:#f0c8c1; --tag-bg:#4a3430; --button-ink:#e7c7c0; --hover:#493632; --primary:#d3aaa2; --primary-hover:#e5bfb7; --focus:#e4b7ae; --page:#191919; }
+   :root { color-scheme:light; --ink:#000000; --muted:#666666; --line:#dddddd; --warm:#ffffff; --accent:#000000; --surface:#ffffff; --tag-ink:#000000; --tag-bg:#f2f2f2; --button-ink:#000000; --hover:#eeeeee; --primary:#000000; --primary-hover:#333333; --focus:#000000; --page:transparent; }
+  :root[data-theme="dark"] { color-scheme:dark; --ink:#ffffff; --muted:#bbbbbb; --line:#444444; --warm:#222222; --accent:#ffffff; --surface:#111111; --tag-ink:#ffffff; --tag-bg:#282828; --button-ink:#ffffff; --hover:#333333; --primary:#ffffff; --primary-hover:#dddddd; --focus:#ffffff; --page:#191919; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--page); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif; color:var(--ink); }
   .widget { width:100%; max-width:570px; min-height:300px; margin:0 auto; padding:24px; border:1px solid var(--line); border-radius:22px; background:var(--surface); display:flex; flex-direction:column; gap:18px; }
@@ -30,14 +30,13 @@
   .body { flex:1; display:flex; flex-direction:column; justify-content:center; min-height:140px; }
   .quote { margin:0 0 11px; font-size:clamp(20px,4.2vw,26px); font-weight:650; letter-spacing:-.025em; line-height:1.42; text-wrap:balance; }
   .hint { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
-  .bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-  .count { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:12px; }
   .controls { display:flex; gap:7px; flex-wrap:wrap; }
   button { border:1px solid var(--line); background:var(--warm); border-radius:12px; padding:9px 12px; color:var(--button-ink); font:inherit; font-size:12px; font-weight:650; cursor:pointer; transition:background-color .15s; }
   button.primary { background:var(--primary); border-color:var(--primary); color:#fff; }
   button:hover { background:var(--hover); }
   button.primary:hover { background:var(--primary-hover); }
-  :root[data-theme="dark"] button.primary { color:#241b19; }
+  :root[data-theme="dark"] button.primary { color:#000000; }
   .top-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .theme-toggle { padding:6px 9px; border-radius:10px; font-size:12px; white-space:nowrap; }
   button:focus-visible, select:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
@@ -64,7 +63,6 @@
     <p class="hint" id="hint"></p>
   </div>
   <div class="bottom">
-    <span class="count" id="counter">300 affirmations</span>
     <div class="controls">
       <button type="button" id="previous" aria-label="Previous affirmation">← Back</button>
       <button type="button" id="copy">Copy</button>
@@ -79,7 +77,6 @@ const hints = {"Starting": "Start with the next small, doable thing.", "Focus": 
 const quoteEl = document.getElementById('quote');
 const hintEl = document.getElementById('hint');
 const categoryTag = document.getElementById('categoryTag');
-const counter = document.getElementById('counter');
 const topicSelect = document.getElementById('category');
 const backButton = document.getElementById('previous');
 const copyButton = document.getElementById('copy');
@@ -149,8 +146,6 @@ function render() {
   savePreference('adhd-widget-last-quote', item.quote);
   hintEl.textContent = hints[item.category];
   categoryTag.textContent = item.category + ' ✦';
-  const shown = historyPos + 1;
-  counter.textContent = shown + ' viewed · ' + eligible.length + ' in ' + (topicSelect.value === 'All' ? 'all topics' : topicSelect.value);
   backButton.disabled = historyPos <= 0;
 }
 function showNext() {
