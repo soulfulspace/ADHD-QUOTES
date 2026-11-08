@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Six gently looping ambient sounds for a quiet moment.">
+  <title>Soothing sounds</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --card: #b7c0b7;
+      --surface: #969d96;
+      --ink: #fff;
+      --accent: #828982;
+      --hover: #737b73;
+      --selected: #626d63;
+      --focus: #26372d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: transparent;
+      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .widget {
+      display: grid;
+      gap: 12px;
+      width: min(100%, 360px);
+      margin-inline: auto;
+      padding: clamp(12px, 5.5vw, 20px);
+      border-radius: 12px;
+      background: var(--card);
+    }
+
+    header { text-align: center; }
+
+    .eyebrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      margin: 0 0 4px;
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 600 clamp(23px, 9vw, 32px)/1.12 Georgia, serif;
+      letter-spacing: -.025em;
+    }
+
+    svg.icon {
+      flex: none;
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.65;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .scenes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 6px 5px;
+      border: 0;
+      border-radius: 7px;
+      color: inherit;
+      background: var(--accent);
+      font: 650 13px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
+      cursor: pointer;
+    }
+
+    .scenes button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+
+    button:hover:not(:disabled) { background: var(--hover); }
+    button[aria-pressed="true"] { background: var(--selected); }
+    button:disabled { opacity: .65; cursor: default; }
+
+    :is(button, input, summary, a):focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .status {
+      grid-column: 1 / -1;
+      min-height: 1.45em;
+      margin: 0;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      width: 0;
+      min-width: 30px;
+      min-height: 32px;
+      margin: 0;
+      accent-color: var(--ink);
+      cursor: pointer;
+    }
+
+    #stop { padding-inline: 12px; }
+
+    details { padding-inline: 2px; font-size: 11px; font-weight: 650; }
+    summary { width: fit-content; cursor: pointer; }
+    details a { color: inherit; }
+    details ul { margin: 5px 0; padding-inline-start: 17px; }
+    details p { margin: 5px 0; }
+
+    @media (max-width: 210px) {
+      .widget { padding: 10px; }
+      .scenes button .icon { display: none; }
+      .controls { gap: 4px 6px; padding-inline: 6px; }
+      #stop { padding-inline: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <symbol id="headphones" viewBox="0 0 24 24">
+      <path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H6a2 2 0 0 1-2-2v-4Zm16 0h-3v6h1a2 2 0 0 0 2-2v-4Z"/>
+    </symbol>
+    <symbol id="rain" viewBox="0 0 24 24">
+      <path d="M6 15a4 4 0 1 1 1.4-7.7 5.5 5.5 0 0 1 10.2 1.2A3.3 3.3 0 1 1 19 15M9 15l-2 4m6-4-2 5m6-5-2 4"/>
+    </symbol>
+    <symbol id="flame" viewBox="0 0 24 24">
+      <path d="M12 3c1 4-1 5 2 8 1-1 2-2 2-4 3 3 4 5 4 8a8 8 0 1 1-16 0c0-3 2-6 4-8 0 2 1 3 2 4 2-2 2-5 2-8Z"/>
+      <path d="M12 13c2 2 3 3 3 5a3 3 0 0 1-6 0c0-2 1-3 3-5Z"/>
+    </symbol>
+    <symbol id="cup" viewBox="0 0 24 24">
+      <path d="M4 9h13v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Zm13 1h2a2 2 0 0 1 0 4h-2M3 21h16M8 3v3m4-3v3"/>
+    </symbol>
+    <symbol id="waves" viewBox="0 0 24 24">
+      <path d="M2 7c3 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2M2 13c3 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2M2 19c3 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/>
+    </symbol>
+    <symbol id="leaf" viewBox="0 0 24 24">
+      <path d="M20 4c0 9-3 14-9 14a5 5 0 0 1-5-5c0-6 5-9 14-9ZM4 21 15 10"/>
+    </symbol>
+    <symbol id="drop" viewBox="0 0 24 24">
+      <path d="M12 3c2 4 7 8 7 12a7 7 0 0 1-14 0c0-4 5-8 7-12Z"/>
+      <path d="M8 15a4 4 0 0 0 4 4"/>
+    </symbol>
+  </svg>
+
+  <main class="widget" aria-labelledby="title">
+    <header>
+      <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#headphones"/></svg> A quiet moment</p>
+      <h1 id="title">Soothing sounds</h1>
+    </header>
+
+    <div class="scenes" role="group" aria-label="Choose a sound">
+      <button type="button" data-sound="rain" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#rain"/></svg> Gentle rain</button>
+      <button type="button" data-sound="fireplace" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#flame"/></svg> Fireplace</button>
+      <button type="button" data-sound="cafe" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#cup"/></svg> Quiet café</button>
+      <button type="button" data-sound="ocean" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#waves"/></svg> Ocean waves</button>
+      <button type="button" data-sound="forest" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#leaf"/></svg> Forest birds</button>
+      <button type="button" data-sound="stream" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#drop"/></svg> Gentle stream</button>
+    </div>
+
+    <div class="controls">
+      <p class="status" id="status" role="status" aria-atomic="true">Choose a sound to begin.</p>
+      <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="55"></label>
+      <button type="button" id="stop" disabled>Stop</button>
+    </div>
+
+    <details>
+      <summary>Sound credits</summary>
+      <ul>
+        <li><a href="https://freesound.org/people/myLoop/sounds/849800/" target="_blank" rel="noopener noreferrer">Rain by myLoop</a></li>
+        <li><a href="https://freesound.org/people/courter/sounds/447818/" target="_blank" rel="noopener noreferrer">Fireplace by courter</a></li>
+        <li><a href="https://freesound.org/people/AwenAudio/sounds/403065/" target="_blank" rel="noopener noreferrer">Café by AwenAudio</a></li>
+        <li><a href="https://freesound.org/people/SamsterBirdies/sounds/578524/" target="_blank" rel="noopener noreferrer">Ocean by SamsterBirdies</a></li>
+        <li><a href="https://freesound.org/people/Magnesus/sounds/723913/" target="_blank" rel="noopener noreferrer">Forest by Magnesus</a></li>
+        <li><a href="https://freesound.org/people/hinchinbrook/sounds/509547/" target="_blank" rel="noopener noreferrer">Stream by hinchinbrook</a></li>
+      </ul>
+      <p>Recordings from Freesound, edited for looping. <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 licence</a>.</p>
+    </details>
+
+    <noscript><p>Turn on JavaScript to play a sound.</p></noscript>
+  </main>
+
+  <script>
+    const playbackStatus = document.querySelector('#status');
+    const volume = document.querySelector('#volume');
+    const stopButton = document.querySelector('#stop');
+    const sceneButtons = document.querySelectorAll('[data-sound]');
+    let context;
+    let gain;
+    let active;
+
+    function stopSound() {
+      if (!active) return;
+      const { button, controller, source } = active;
+      active = null;
+      controller.abort();
+      if (source) {
+        source.stop();
+        source.disconnect();
+      }
+      button.setAttribute('aria-pressed', 'false');
+      stopButton.disabled = true;
+    }
+
+    async function playSound(button) {
+      if (active?.button === button) return;
+      stopSound();
+
+      const request = { button, controller: new AbortController() };
+      const name = button.textContent.trim();
+      active = request;
+      button.setAttribute('aria-pressed', 'true');
+      stopButton.disabled = false;
+      playbackStatus.textContent = 'Loading ' + name.toLowerCase() + '…';
+
+      try {
+        if (!context) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          context = new AudioContext();
+          gain = context.createGain();
+          gain.gain.value = Number(volume.value) / 100;
+          gain.connect(context.destination);
+        }
+
+        // Resume during the click so browsers allow playback in the embed.
+        const resumed = context.resume();
+        const downloaded = fetch('soothing-audio/' + button.dataset.sound + '.mp3', {
+          signal: request.controller.signal
+        });
+        const [, response] = await Promise.all([resumed, downloaded]);
+        if (!response.ok) throw new Error('Audio download failed');
+
+        const buffer = await context.decodeAudioData(await response.arrayBuffer());
+        if (active !== request) return;
+
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        source.connect(gain);
+        source.start();
+        request.source = source;
+        playbackStatus.textContent = 'Playing · ' + name;
+      } catch {
+        if (active !== request) return;
+        stopSound();
+        playbackStatus.textContent = 'Couldn’t play this sound. Try again.';
+      }
+    }
+
+    for (const button of sceneButtons) {
+      button.addEventListener('click', () => playSound(button));
+    }
+
+    stopButton.addEventListener('click', () => {
+      const button = active?.button;
+      stopSound();
+      playbackStatus.textContent = 'Stopped. Choose a sound to begin.';
+      button?.focus();
+    });
+
+    volume.addEventListener('input', () => {
+      if (gain) {
+        gain.gain.setTargetAtTime(Number(volume.value) / 100, context.currentTime, 0.03);
+      }
+    });
+  </script>
+</body>
+</html>
