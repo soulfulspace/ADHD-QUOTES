@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A gentle ADHD planner widget with 200 tiny steps for moments when you feel stuck.">
+  <meta name="author" content="SoulfulSpace">
   <title>Feeling stuck? · A tiny reset</title>
   <style>
     :root {
@@ -88,6 +89,7 @@
       .widget { padding: 10px; }
       .tip { padding-inline: 8px; }
     }
+  .ownership { margin:0; color:var(--muted, var(--ink)); font-size:10px; font-weight:600; line-height:1.3; text-align:center; }
   </style>
 </head>
 <body>
@@ -104,6 +106,7 @@
     <p id="tip" class="tip" role="status" aria-atomic="true">Pick one small step to try right now.</p>
     <button id="draw-tip" type="button">Give me a tiny step</button>
     <noscript><p>Turn on JavaScript to draw a tip.</p></noscript>
+    <footer class="ownership" title="Original widget by SoulfulSpace">&copy; SoulfulSpace</footer>
   </main>
 
   <script>

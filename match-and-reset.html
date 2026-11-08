@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A short matching game for a quiet break between tasks.">
+  <meta name="author" content="SoulfulSpace">
   <title>Match &amp; Reset</title>
   <style>
     :root {
@@ -150,6 +151,7 @@
       .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .tile { aspect-ratio: auto; }
     }
+  .ownership { margin:0; color:var(--muted, var(--ink)); font-size:10px; font-weight:600; line-height:1.3; text-align:center; }
   </style>
 </head>
 <body>
@@ -193,6 +195,7 @@
 
     <button id="restart" type="button" hidden>Shuffle cards</button>
     <noscript>Turn on JavaScript to play.</noscript>
+    <footer class="ownership" title="Original widget by SoulfulSpace">&copy; SoulfulSpace</footer>
   </main>
 
   <script>
