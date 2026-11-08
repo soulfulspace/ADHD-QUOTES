@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A short matching game for a quiet break between tasks.">
+  <title>Match &amp; Reset</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --card: #b7c0b7;
+      --surface: #969d96;
+      --ink: #fff;
+      --accent: #828982;
+      --hover: #737b73;
+      --selected: #626d63;
+      --focus: #26372d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .widget {
+      display: grid;
+      gap: 12px;
+      width: min(100%, 360px);
+      margin-inline: auto;
+      padding: clamp(12px, 5.5vw, 20px);
+      border-radius: 12px;
+      background: var(--card);
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 600 clamp(23px, 9vw, 32px)/1.12 Georgia, serif;
+      letter-spacing: -.025em;
+    }
+
+    .panel {
+      display: grid;
+      gap: 9px;
+      padding: 8px;
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      padding-inline: 2px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .dots { display: flex; gap: 5px; }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ink);
+      opacity: .45;
+    }
+    .dot[data-filled] { opacity: 1; }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      color: var(--ink);
+      font: 650 13px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover { background: var(--hover); }
+    button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+    .tile {
+      display: grid;
+      position: relative;
+      place-items: center;
+      aspect-ratio: 1;
+      padding: 5px;
+    }
+
+    .tile[data-state="shown"],
+    .tile[data-state="matched"] { background: var(--selected); cursor: default; }
+
+    .tile[data-state="matched"] { background: var(--hover); }
+
+    .icon {
+      width: clamp(21px, 8.5vw, 28px);
+      height: clamp(21px, 8.5vw, 28px);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.65;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon.check {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 11px;
+      height: 11px;
+      stroke-width: 2.25;
+    }
+
+    .status {
+      display: grid;
+      align-content: center;
+      min-height: 2.8em;
+      margin: 0;
+      padding-inline: 2px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 238px) {
+      .widget { padding: 10px; }
+      .panel { padding: 6px; }
+    }
+
+    @media (max-width: 225px) {
+      .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tile { aspect-ratio: auto; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <symbol id="hidden-card" viewBox="0 0 24 24">
+      <path d="M12 4c0 5-3 8-8 8 5 0 8 3 8 8 0-5 3-8 8-8-5 0-8-3-8-8Z"/>
+    </symbol>
+    <symbol id="leaf" viewBox="0 0 24 24">
+      <path d="M20 4c0 9-3 14-9 14a5 5 0 0 1-5-5c0-6 5-9 14-9ZM4 21 15 10"/>
+    </symbol>
+    <symbol id="moon" viewBox="0 0 24 24">
+      <path d="M20.4 15.7A8.7 8.7 0 0 1 8.3 3.6 8.7 8.7 0 1 0 20.4 15.7Z"/>
+    </symbol>
+    <symbol id="cloud" viewBox="0 0 24 24">
+      <path d="M6 18a4 4 0 1 1 .5-8 5.5 5.5 0 0 1 10.6 1.4 3.4 3.4 0 1 1 1.5 6.6Z"/>
+    </symbol>
+    <symbol id="star" viewBox="0 0 24 24">
+      <path d="m12 3 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3-5.7-3-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/>
+    </symbol>
+    <symbol id="check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4 10-9"/>
+    </symbol>
+  </svg>
+
+  <main class="widget" aria-labelledby="title">
+    <header>
+      <p class="eyebrow">A little brain break</p>
+      <h1 id="title">Match &amp; Reset</h1>
+    </header>
+
+    <div class="panel">
+      <div class="progress">
+        <span id="progress">0 of 4 pairs</span>
+        <div class="dots" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+      <div class="board" id="board" role="group" aria-label="Matching cards"></div>
+      <p class="status" id="message" role="status" aria-atomic="true">Flip two cards to find a match.</p>
+    </div>
+
+    <button id="restart" type="button" hidden>Shuffle cards</button>
+    <noscript>Turn on JavaScript to play.</noscript>
+  </main>
+
+  <script>
+    const shapes = ['leaf', 'moon', 'cloud', 'star'];
+    const board = document.querySelector('#board');
+    const progress = document.querySelector('#progress');
+    const dots = document.querySelectorAll('.dot');
+    const message = document.querySelector('#message');
+    const restart = document.querySelector('#restart');
+    const cards = [];
+    let openCards = [];
+    let pairs = 0;
+    let flipBackTimer;
+
+    function icon(name, className = 'icon') {
+      return '<svg class="' + className + '" aria-hidden="true"><use href="#' + name + '"></use></svg>';
+    }
+
+    function renderCard(card) {
+      const isHidden = card.state === 'hidden';
+      const isMatched = card.state === 'matched';
+      const label = isHidden ? 'face down' : card.shape + (isMatched ? ', matched' : '');
+      card.button.dataset.state = card.state;
+      card.button.setAttribute('aria-label', 'Card ' + (card.index + 1) + ', ' + label);
+      card.button.setAttribute('aria-disabled', String(!isHidden));
+      card.button.innerHTML = icon(isHidden ? 'hidden-card' : card.shape) + (isMatched ? icon('check', 'icon check') : '');
+    }
+
+    function renderProgress() {
+      progress.textContent = pairs + ' of ' + shapes.length + ' pairs';
+      dots.forEach((dot, index) => dot.toggleAttribute('data-filled', index < pairs));
+    }
+
+    function flipCard(card) {
+      if (card.state !== 'hidden' || openCards.length === 2) return;
+
+      card.state = 'shown';
+      renderCard(card);
+      openCards.push(card);
+
+      if (openCards.length === 1) {
+        message.textContent = 'Now flip a second card.';
+        return;
+      }
+
+      const [first, second] = openCards;
+      if (first.shape === second.shape) {
+        for (const matched of openCards) {
+          matched.state = 'matched';
+          renderCard(matched);
+        }
+        openCards = [];
+        pairs += 1;
+        renderProgress();
+
+        if (pairs === shapes.length) {
+          message.textContent = 'All matched! Take a breath, then pick your next task.';
+          restart.textContent = 'Play again';
+        } else {
+          message.textContent = 'A match! ' + progress.textContent + '.';
+        }
+        return;
+      }
+
+      message.textContent = 'Different shapes. Try another pair.';
+      flipBackTimer = setTimeout(() => {
+        for (const revealed of openCards) {
+          revealed.state = 'hidden';
+          renderCard(revealed);
+        }
+        openCards = [];
+      }, 950);
+    }
+
+    function shuffleCards() {
+      clearTimeout(flipBackTimer);
+      pairs = 0;
+      openCards = [];
+
+      const deck = [...shapes, ...shapes];
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+
+      cards.forEach((card, index) => {
+        card.shape = deck[index];
+        card.state = 'hidden';
+        renderCard(card);
+      });
+
+      renderProgress();
+      message.textContent = 'Flip two cards to find a match.';
+      restart.textContent = 'Shuffle cards';
+    }
+
+    for (let index = 0; index < shapes.length * 2; index++) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'tile';
+      const card = { button, index };
+      button.addEventListener('click', () => flipCard(card));
+      board.append(button);
+      cards.push(card);
+    }
+
+    restart.addEventListener('click', () => {
+      shuffleCards();
+      cards[0].button.focus();
+    });
+
+    shuffleCards();
+    restart.hidden = false;
+  </script>
+</body>
+</html>
