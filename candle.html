@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A softly flickering burgundy candle on a transparent background.">
+  <meta name="description" content="Three textured burgundy pillar candles with softly flickering flames on a transparent background.">
   <meta name="author" content="SoulfulSpace">
-  <title>Burgundy Candle · SoulfulSpace</title>
+  <title>Burgundy Candles · SoulfulSpace</title>
   <style>
     html, body {
       margin: 0;
@@ -18,83 +18,115 @@
       place-items: center;
     }
 
-    .candle {
+    figure {
+      width: min(94vw, 260px, calc((100vh - 24px) * .744));
+      margin: 0;
+      text-align: center;
+    }
+
+    .candles {
       display: block;
-      width: min(100vw, 176px);
-      height: min(100vh, 248px);
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+    }
+
+    figcaption {
+      margin-top: 5px;
+      color: #7d0303;
+      font: 600 10px/1.3 system-ui, sans-serif;
     }
 
     .flame {
-      transform-box: view-box;
-      transform-origin: 66px 72px;
-      animation: flicker 2.8s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: flicker var(--duration) ease-in-out var(--phase) infinite;
     }
 
+    .flame-left { --duration: 3.71s; --phase: -.82s; }
+    .flame-back { --duration: 4.37s; --phase: -2.35s; }
+    .flame-right { --duration: 3.29s; --phase: -1.46s; }
+
     @keyframes flicker {
-      0%, 100% { transform: rotate(-2deg) scale(1, 1); }
-      12% { transform: rotate(2deg) scale(.96, 1.045); }
-      26% { transform: rotate(5deg) scale(1.035, .91); }
-      40% { transform: rotate(-3deg) scale(.98, 1.025); }
-      56% { transform: rotate(-5deg) scale(1.035, .95); }
-      67% { transform: rotate(1deg) scale(.96, 1.045); }
-      82% { transform: rotate(4deg) scale(1.025, .93); }
-      92% { transform: rotate(-1deg) scale(.98, 1.015); }
+      0%, 100% { transform: rotate(-1deg) scale(.97, .99); opacity: .97; }
+      9% { transform: rotate(1deg) scale(1, 1.02); opacity: 1; }
+      19% { transform: rotate(4deg) scale(.94, .95); opacity: .92; }
+      26% { transform: rotate(2deg) scale(1.02, 1.035); opacity: 1; }
+      37% { transform: rotate(-2deg) scale(.98, 1); opacity: .98; }
+      45% { transform: rotate(-5deg) scale(1.04, .91); opacity: .93; }
+      53% { transform: rotate(-2deg) scale(1, .98); opacity: .97; }
+      65% { transform: rotate(1deg) scale(.96, 1.045); opacity: 1; }
+      74% { transform: rotate(3deg) scale(.99, .97); opacity: .94; }
+      86% { transform: rotate(-1deg) scale(.97, 1.015); opacity: 1; }
+      93% { transform: rotate(-3deg) scale(1.03, .975); opacity: .96; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .flame { animation: none; }
     }
+
+    @media (prefers-color-scheme: dark) {
+      figcaption { color: #e7c0ba; }
+    }
   </style>
 </head>
 <body>
-  <svg class="candle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 188" role="img" aria-labelledby="candle-title">
-    <title id="candle-title">Burgundy candle with a softly flickering flame</title>
+  <figure>
+    <svg class="candles" xmlns="http://www.w3.org/2000/svg" width="930" height="1250" viewBox="164 -45 930 1250" role="img" aria-labelledby="candle-title">
+      <title id="candle-title">Three burgundy pillar candles with flickering flames</title>
+      <defs>
+        <linearGradient id="flame-edge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe2a4" stop-opacity=".92"/>
+          <stop offset=".24" stop-color="#fff0c8"/>
+          <stop offset=".66" stop-color="#ffce78"/>
+          <stop offset=".88" stop-color="#eb8a42"/>
+          <stop offset="1" stop-color="#8f4c35" stop-opacity=".45"/>
+        </linearGradient>
+        <linearGradient id="flame-heart" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fffdf1" stop-opacity="0"/>
+          <stop offset=".33" stop-color="#fffdf1"/>
+          <stop offset=".76" stop-color="#fff6cf"/>
+          <stop offset="1" stop-color="#ffa04f" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="wax-light">
+          <stop offset="0" stop-color="#ffc56e" stop-opacity=".30"/>
+          <stop offset="1" stop-color="#ffc56e" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="halo" x="-50%" y="-18%" width="200%" height="136%">
+          <feGaussianBlur stdDeviation="4"/>
+        </filter>
+        <filter id="soft-edge" x="-22%" y="-10%" width="144%" height="120%">
+          <feGaussianBlur stdDeviation="1.35"/>
+        </filter>
+        <path id="flame-shape" d="M0 2 C-8 2 -14 -7 -14 -22 C-15 -41 -9 -65 -4 -81 C-2 -91 -2 -99 1 -105 C6 -91 7 -76 10 -63 C16 -46 17 -29 13 -16 C11 -4 5 2 0 2Z"/>
+        <g id="flame-light">
+          <use href="#flame-shape" fill="#ffb956" opacity=".42" filter="url(#halo)"/>
+          <use href="#flame-shape" fill="url(#flame-edge)" filter="url(#soft-edge)"/>
+          <path d="M0 -7 C-7 -9 -8 -24 -7 -39 C-7 -56 -1 -82 1 -92 C5 -74 10 -51 10 -35 C11 -19 7 -8 0 -7Z" fill="url(#flame-heart)" filter="url(#soft-edge)"/>
+        </g>
+      </defs>
 
-    <defs>
-      <linearGradient id="wax-shading" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0" stop-color="#410104" stop-opacity=".28"/>
-        <stop offset=".24" stop-color="#ff9b87" stop-opacity=".20"/>
-        <stop offset=".49" stop-color="#ff9b87" stop-opacity="0"/>
-        <stop offset=".72" stop-color="#410104" stop-opacity=".12"/>
-        <stop offset="1" stop-color="#410104" stop-opacity=".54"/>
-      </linearGradient>
-      <linearGradient id="wax-top" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#b63232"/>
-        <stop offset="1" stop-color="#8c1218"/>
-      </linearGradient>
-      <radialGradient id="wax-pool">
-        <stop offset="0" stop-color="#e47455" stop-opacity=".58"/>
-        <stop offset="1" stop-color="#e47455" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="flame-colour" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#ffe0a0"/>
-        <stop offset=".45" stop-color="#ffbb59"/>
-        <stop offset=".83" stop-color="#f78336"/>
-        <stop offset="1" stop-color="#c64a21"/>
-      </linearGradient>
-      <linearGradient id="flame-core" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#ffe7a4"/>
-        <stop offset=".63" stop-color="#fff6d1"/>
-        <stop offset="1" stop-color="#fdb04a"/>
-      </linearGradient>
-      <path id="wax-profile" d="M31 85 C31 79 47 75 66 75 S101 79 101 85 V159 C101 166 85 171 66 171 S31 166 31 159Z"/>
-    </defs>
+      <image href="candle-assets/burgundy-candles.webp" width="1263" height="1245" preserveAspectRatio="none"/>
 
-    <g id="wax">
-      <use href="#wax-profile" fill="#7d0303"/>
-      <use href="#wax-profile" fill="url(#wax-shading)"/>
-      <ellipse cx="66" cy="85" rx="35" ry="10" fill="url(#wax-top)"/>
-      <ellipse cx="66" cy="86" rx="23" ry="6" fill="url(#wax-pool)"/>
-      <path d="M33 88 C36 91 40 93 44 94 L44 107 C44 112 49 113 50 108 L50 100 C50 97 53 96 56 97 C60 98 61 100 61 104 V116 C61 122 67 122 68 116 V101 C68 97 72 96 77 95 C58 96 42 94 33 88Z" fill="#f18579" opacity=".17"/>
-      <path d="M35 156 C40 162 49 164 58 165" fill="none" stroke="#ed7c70" stroke-linecap="round" opacity=".25"/>
-      <path d="M65 86 C68 82 68 76 66 71" fill="none" stroke="#36191a" stroke-width="2" stroke-linecap="round"/>
-      <text x="66" y="150" text-anchor="middle" fill="#fff1e9" font-family="system-ui, sans-serif" font-size="7.2" font-weight="600" opacity=".86">@soulfulspace</text>
-    </g>
+      <g aria-hidden="true" fill="url(#wax-light)">
+        <ellipse cx="344" cy="451" rx="42" ry="13"/>
+        <ellipse cx="685" cy="122" rx="45" ry="13"/>
+        <ellipse cx="886" cy="759" rx="42" ry="13"/>
+      </g>
 
-    <g class="flame" aria-hidden="true">
-      <path d="M66 72 C54 72 49 64 51 55 C53 46 61 41 62 32 C63 27 62 22 65 16 C66 31 80 39 82 52 C84 63 77 72 66 72Z" fill="url(#flame-colour)"/>
-      <path d="M66 71 C58 70 55 64 58 58 C60 53 64 49 66 42 C68 49 74 55 75 61 C76 67 71 71 66 71Z" fill="url(#flame-core)"/>
-    </g>
-  </svg>
+      <g aria-hidden="true">
+        <g transform="translate(344 404) scale(.89 .92)">
+          <g class="flame flame-left"><use href="#flame-light"/></g>
+        </g>
+        <g transform="translate(685 79)">
+          <g class="flame flame-back"><use href="#flame-light"/></g>
+        </g>
+        <g transform="translate(886 714) scale(.92 .96)">
+          <g class="flame flame-right"><use href="#flame-light"/></g>
+        </g>
+      </g>
+    </svg>
+    <figcaption>@soulfulspace</figcaption>
+  </figure>
 </body>
 </html>
