@@ -108,6 +108,7 @@ function resample(source, target, i, x, y, width) {
 function createBakingLoop(source, width, rig, atlas) {
   const { region, head, arm, bowl, mixer, eyes } = rig;
   const [left, top, patchWidth, patchHeight] = region;
+  const [neckX, neckY] = head;
   const eyelids = eyes.map(([x, y, rx, ry, angle]) => (
     { x, y, rx, ry, sin: Math.sin(angle), cos: Math.cos(angle) }
   ));
@@ -138,8 +139,9 @@ function createBakingLoop(source, width, rig, atlas) {
   const pixels = [];
 
   for (let y = top; y < top + patchHeight; y++) {
+    // The hat and head share a rigid transform that eases into the shoulders.
+    const headWeight = 1 - smooth((y - neckY) / 65);
     for (let x = left; x < left + patchWidth; x++) {
-      const headWeight = influence(x, y, head);
       const armWeight = Math.max(...arm.map(shape => influence(x, y, shape)));
       const batterWeight = influence(x, y, bowl) * (1 - armWeight);
       const eye = eyelids.find(lid => {
@@ -156,6 +158,10 @@ function createBakingLoop(source, width, rig, atlas) {
     const time = (elapsed + 0.55) % loopSeconds;
     const phase = time / loopSeconds * Math.PI * 2;
     const turn = -Math.cos(phase - 0.15);
+    const headSlide = 3.1 * turn;
+    const headAngle = 0.024 * turn;
+    const headSin = Math.sin(headAngle);
+    const headCosOffset = Math.cos(headAngle) - 1;
     const stir = phase * 3 + 0.4;
     const glide = 5.5 * Math.sin(stir);
     const lift = 2.7 * Math.cos(stir);
@@ -168,10 +174,12 @@ function createBakingLoop(source, width, rig, atlas) {
     const closedMix = smooth((blink - 0.24) / 0.59);
 
     for (const { x, y, headWeight, armWeight, batterWeight, eye } of pixels) {
-      const headOffset = 4.5 * turn * headWeight;
-      const sx = x - headOffset - (glide - tilt * (y - mixer[1])) * armWeight
+      const dx = x - neckX - headSlide;
+      const dy = y - neckY;
+      const sx = x + (headCosOffset * dx + headSin * dy - headSlide) * headWeight
+        - (glide - tilt * (y - mixer[1])) * armWeight
         + ripple * (y - bowl[1]) * batterWeight;
-      const sy = y - (0.9 * turn + (x - head[0]) * 0.021 * turn) * headWeight
+      const sy = y + (-headSin * dx + headCosOffset * dy) * headWeight
         - (lift + tilt * (x - mixer[0])) * armWeight
         - ripple * (x - bowl[0]) * batterWeight * 0.3;
       const index = ((y - top) * patchWidth + x - left) * 4;
@@ -249,8 +257,8 @@ async function start() {
 }
 
 const rig = {
-  region: [205, 16, 374, 519],
-  head: [343, 151, 108, 123, -0.15],
+  region: [175, 7, 404, 528],
+  head: [343, 210],
   arm: [
     [416, 412, 108, 74, 0.24],
     [449, 382, 72, 42, 0.25],
