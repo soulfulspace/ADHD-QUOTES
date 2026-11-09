@@ -7,21 +7,11 @@
   <meta name="author" content="SoulfulSpace">
   <title>Burgundy Quotes · SoulfulSpace</title>
   <style>
-    /* Symphonie CAT by Peter Wiegel, SIL OFL 1.1. See burgundy-quotes/OFL.txt. */
-    @font-face {
-      font-family: "Symphonie CAT";
-      src: url("burgundy-quotes/SymphonieCAT.ttf") format("truetype");
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-    }
-
     :root {
-      color-scheme: dark;
-      --card: #7d0303;
-      --panel: #961313;
-      --button: #000;
-      --ink: #fff;
+      color-scheme: light;
+      --card: #f5ede9;
+      --panel: #ffffff;
+      --ink: #7d0303;
     }
 
     * { box-sizing: border-box; }
@@ -59,8 +49,8 @@
       min-height: 38px;
       border: 0;
       border-radius: 7px;
-      color: inherit;
-      background: var(--button);
+      color: #ffffff;
+      background: var(--ink);
       font: 650 12px/1.25 system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
@@ -82,7 +72,7 @@
 
     .quote {
       margin: 0;
-      font: 400 clamp(30px, 8vw, 46px)/1.19 "Symphonie CAT", "Snell Roundhand", "Segoe Script", cursive;
+      font: 400 clamp(19px, 5.8vw, 28px)/1.4 Georgia, "Times New Roman", serif;
       overflow-wrap: anywhere;
       text-wrap: balance;
     }
