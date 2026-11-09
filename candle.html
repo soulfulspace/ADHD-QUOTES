@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A softly flickering burgundy candle on a transparent background.">
+  <meta name="author" content="SoulfulSpace">
+  <title>Burgundy Candle · SoulfulSpace</title>
+  <style>
+    html, body {
+      margin: 0;
+      background: transparent;
+    }
+
+    body {
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+    }
+
+    .candle {
+      display: block;
+      width: min(100vw, 176px);
+      height: min(100vh, 248px);
+    }
+
+    .flame {
+      transform-box: view-box;
+      transform-origin: 66px 72px;
+      animation: flicker 2.8s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: rotate(-2deg) scale(1, 1); }
+      12% { transform: rotate(2deg) scale(.96, 1.045); }
+      26% { transform: rotate(5deg) scale(1.035, .91); }
+      40% { transform: rotate(-3deg) scale(.98, 1.025); }
+      56% { transform: rotate(-5deg) scale(1.035, .95); }
+      67% { transform: rotate(1deg) scale(.96, 1.045); }
+      82% { transform: rotate(4deg) scale(1.025, .93); }
+      92% { transform: rotate(-1deg) scale(.98, 1.015); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flame { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="candle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 188" role="img" aria-labelledby="candle-title">
+    <title id="candle-title">Burgundy candle with a softly flickering flame</title>
+
+    <defs>
+      <linearGradient id="wax-shading" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#410104" stop-opacity=".28"/>
+        <stop offset=".24" stop-color="#ff9b87" stop-opacity=".20"/>
+        <stop offset=".49" stop-color="#ff9b87" stop-opacity="0"/>
+        <stop offset=".72" stop-color="#410104" stop-opacity=".12"/>
+        <stop offset="1" stop-color="#410104" stop-opacity=".54"/>
+      </linearGradient>
+      <linearGradient id="wax-top" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#b63232"/>
+        <stop offset="1" stop-color="#8c1218"/>
+      </linearGradient>
+      <radialGradient id="wax-pool">
+        <stop offset="0" stop-color="#e47455" stop-opacity=".58"/>
+        <stop offset="1" stop-color="#e47455" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="flame-colour" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#ffe0a0"/>
+        <stop offset=".45" stop-color="#ffbb59"/>
+        <stop offset=".83" stop-color="#f78336"/>
+        <stop offset="1" stop-color="#c64a21"/>
+      </linearGradient>
+      <linearGradient id="flame-core" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#ffe7a4"/>
+        <stop offset=".63" stop-color="#fff6d1"/>
+        <stop offset="1" stop-color="#fdb04a"/>
+      </linearGradient>
+      <path id="wax-profile" d="M31 85 C31 79 47 75 66 75 S101 79 101 85 V159 C101 166 85 171 66 171 S31 166 31 159Z"/>
+    </defs>
+
+    <g id="wax">
+      <use href="#wax-profile" fill="#7d0303"/>
+      <use href="#wax-profile" fill="url(#wax-shading)"/>
+      <ellipse cx="66" cy="85" rx="35" ry="10" fill="url(#wax-top)"/>
+      <ellipse cx="66" cy="86" rx="23" ry="6" fill="url(#wax-pool)"/>
+      <path d="M33 88 C36 91 40 93 44 94 L44 107 C44 112 49 113 50 108 L50 100 C50 97 53 96 56 97 C60 98 61 100 61 104 V116 C61 122 67 122 68 116 V101 C68 97 72 96 77 95 C58 96 42 94 33 88Z" fill="#f18579" opacity=".17"/>
+      <path d="M35 156 C40 162 49 164 58 165" fill="none" stroke="#ed7c70" stroke-linecap="round" opacity=".25"/>
+      <path d="M65 86 C68 82 68 76 66 71" fill="none" stroke="#36191a" stroke-width="2" stroke-linecap="round"/>
+      <text x="66" y="150" text-anchor="middle" fill="#fff1e9" font-family="system-ui, sans-serif" font-size="7.2" font-weight="600" opacity=".86">@soulfulspace</text>
+    </g>
+
+    <g class="flame" aria-hidden="true">
+      <path d="M66 72 C54 72 49 64 51 55 C53 46 61 41 62 32 C63 27 62 22 65 16 C66 31 80 39 82 52 C84 63 77 72 66 72Z" fill="url(#flame-colour)"/>
+      <path d="M66 71 C58 70 55 64 58 58 C60 53 64 49 66 42 C68 49 74 55 75 61 C76 67 71 71 66 71Z" fill="url(#flame-core)"/>
+    </g>
+  </svg>
+</body>
+</html>
