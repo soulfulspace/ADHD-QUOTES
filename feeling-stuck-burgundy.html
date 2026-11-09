@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="198 small next steps for moments when you feel stuck.">
+  <meta name="author" content="SoulfulSpace">
+  <title>Feeling stuck? · Burgundy edition</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --card: #7d0303;
+      --tip: #961313;
+      --button: #000;
+      --ink: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .widget {
+      display: grid;
+      gap: 9px;
+      width: min(100%, 360px);
+      margin-inline: auto;
+      padding: clamp(10px, 5vw, 16px);
+      border-radius: 12px;
+      background: var(--card);
+      text-align: center;
+    }
+
+    .tip {
+      display: grid;
+      align-content: center;
+      min-height: 92px;
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--tip);
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--button);
+      color: inherit;
+      font: 650 13px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover { text-decoration: underline; text-underline-offset: 3px; }
+    button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    footer {
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <main class="widget" aria-label="Feeling stuck? Get a small next step.">
+    <p id="tip" class="tip" role="status" aria-atomic="true">Open the file, page, or app you need. Leave it open so your next step is ready.</p>
+    <button id="draw-tip" type="button">Another tip</button>
+    <footer>@soulfulspace</footer>
+  </main>
+
+  <script>
+    const tips = [
+      // Getting started
+      "Open the file, page, or app you need. Leave it open so your next step is ready.",
+      "Set a two-minute timer and start anywhere. When it rings, you can stop.",
+      "Write one rough sentence. A placeholder gives you something to work with.",
+      "Put the first tool you need within reach. For laundry, that might be the basket.",
+      "Count down from five, then do the first physical move, like standing up or reaching for a pen.",
+      "Finish this sentence out loud: “For the next minute, I’ll…”",
+      "Start in the middle. Pick the part you already know how to do.",
+      "Set up a blank draft and give it a working title. That’s a step you can finish now.",
+      "Try one small piece as a sample, like folding one shirt or answering one question.",
+      "Do the easiest step on purpose. You can decide what comes after it.",
+      "Pick a cue you already have, like the kettle clicking off. Start one tiny step when it happens.",
+      "Try the task for the first 30 seconds of a song. Decide whether to continue when the time is up.",
+      "Make a visible mark. Write the date, check a box, or move the task into In Progress.",
+      "Set a finish line you can reach in one minute. Try “put three things away.”",
+      "Pick an item you can hold. If you’re sorting, decide where just that item goes.",
+      "Begin with a duplicate or a scrap page so you can experiment freely.",
+      "Do the same first move you used the last time this task went well.",
+      "Put your feet on the floor and read the name of your next task out loud.",
+      "Write the first three words that come to mind. Use them as your way into the draft.",
+      "Prepare the space for exactly one action. Leave the rest of the setup for later.",
+
+      // Breaking down a task
+      "Turn a vague task into a verb and an object, like “find the invoice.”",
+      "Write down three possible steps. Circle the first one you can actually do.",
+      "Finish this sentence: “I’ll know I’m done when…” Keep the answer to one line.",
+      "If the task has several parts, choose one that takes less than five minutes.",
+      "Draw three boxes for start, middle, and finish. Fill in only the start box.",
+      "Separate gathering what you need from doing the work. Pick one to do first.",
+      "Find the first decision the task requires. Give yourself just two options.",
+      "Circle the part you’re stuck on. Try one piece on either side of it.",
+      "Split a big job by location. Work on one shelf, drawer, or corner.",
+      "Split a reading task by headings. Read just the first section.",
+      "For a form, start with the fields you already know. Mark the ones you need to look up.",
+      "For an email, write the one thing the recipient needs to know.",
+      "For a tidy-up, choose one category, like cups, and collect just those.",
+      "For an errand, check the opening hours. You can plan the trip once you have them.",
+      "For a creative project, sketch one rough version on a scrap of paper.",
+      "Draw a line through one optional step. See if the task feels easier to start.",
+      "Name the thing that has to happen before this task can move forward. Work on that first.",
+      "If you need several items, make a quick list and find the first one.",
+      "Open an old example of this kind of work. Copy its headings into a new draft.",
+      "Ask what you could finish if you only had the next five minutes. Pick that piece.",
+
+      // Choosing what to do
+      "Write down two things you could do next. Give yourself 30 seconds to choose.",
+      "Pick the task with the nearest real deadline. Do one step toward it.",
+      "Choose one thing that would make tomorrow easier, like leaving your keys by the door.",
+      "Ask “What matters for the next hour?” Pick one task that fits.",
+      "Sort three tasks into Today, Later, or Let go. Start with one from Today.",
+      "If two choices are equally fine, flip a coin and try the result for five minutes.",
+      "Pick the task that helps someone else move forward. Send the first update they need.",
+      "Imagine a friend with your to-do list. What first step would you suggest to them?",
+      "Check your calendar for your next commitment. Choose something that fits the gap.",
+      "Pick one task that matches your energy right now. A small one counts.",
+      "Make a one-item list on a sticky note. Put the full list out of sight for a few minutes.",
+      "Choose the task with the fewest things to set up. Try it while you have the opening.",
+      "If the choices feel endless, choose between one home task and one admin task.",
+      "Look for one task you can finish in the same place you’re already sitting.",
+      "Ask which task you’ll be glad to have started by tonight. Give it a minute now.",
+      "Pick one choice you can easily change later. Use it as a starting point.",
+      "Remove anything waiting on a reply from your short list. Pick from the remaining tasks.",
+      "Put a star beside one essential task. Everything else can sit below it for now.",
+      "Choose a task that clears space for another one, like plugging in the device you’ll need.",
+      "If several options feel good, choose the one with a clear stopping point.",
+
+      // Clearing mental clutter
+      "Give yourself one minute to write everything on your mind. Underline one next step.",
+      "Park the new idea in your Brain Dump. Come back to the thing you already chose.",
+      "Write “I’m stuck because…” and finish the sentence once. See if it points to a next step.",
+      "Draw two columns called “On my mind” and “Can do now.” Move one item into the second.",
+      "Say the task in plain words, as if you were explaining it to a friend.",
+      "Keep a scrap page nearby. Give each interruption one line and return to your task.",
+      "Pick one unfinished thing to reschedule. Write down when you’ll look at it again.",
+      "Write the question you’re trying to answer at the top of your notes.",
+      "Move one low-priority thought into a Someday list so you can come back to it.",
+      "Note the one detail you keep trying to remember. Give your brain a place to find it.",
+      "Make a quick list of what’s already done. Use the last item to find where to resume.",
+      "Circle one thing you can control in the next five minutes. Start there.",
+      "Say your thoughts into a 30-second voice note if writing feels like too much.",
+      "Give the task a specific name. Try “reply to Mia” in place of “catch up.”",
+      "List the information you’re missing. Pick one source that might have it.",
+      "Write what you wish would happen next. Turn any part you can do into a small action.",
+      "Make a parking spot for open tabs you want later. Save a couple and close them.",
+      "Put one worry in a sentence. If it has an action, give the action its own line.",
+      "Draw a quick doodle of what the task involves. Label the part you can do first.",
+      "If you’re keeping a plan in your head, write the next two steps where you’ll see them.",
+
+      // Adjusting the environment
+      "Turn on Do Not Disturb for five minutes and try one small step.",
+      "Move your phone just out of reach and keep the tool you need close.",
+      "Clear one hand-sized patch of desk for the thing you’re doing now.",
+      "Close or minimise everything except the window you need for the next step.",
+      "Change seats for a short work block. See if a fresh spot helps you start.",
+      "Put a sticky note beside your screen with the one thing you’re doing now.",
+      "Try working in silence for a few minutes. See whether it makes the next step easier.",
+      "Use a familiar background track and work until it ends.",
+      "Adjust one thing that’s bothering you, like the chair height, light, or room noise.",
+      "Put the thing you keep forgetting in the path you’ll walk through next.",
+      "Place distracting objects in one temporary basket. Come back to them after your task.",
+      "If your screen feels busy, hide the sidebar or switch the current page to full screen.",
+      "Move a task you keep avoiding to the spot where its supplies already are.",
+      "Put your notebook or planner right next to the thing you want to remember.",
+      "Use a larger text size for the next thing you need to read.",
+      "Move your inbox or group chat off the screen while you finish one draft.",
+      "Lay out just the supplies for step one. Put the rest within reach for later.",
+      "Start with the easiest tool available, even if it’s a plain piece of paper.",
+      "Open your to-do list and hide completed tasks for a clearer view.",
+      "Pick a workspace where you can leave the current step visible until you’re ready.",
+
+      // Taking a moment to reset
+      "Unclench your jaw, drop your shoulders, and give yourself one quiet breath.",
+      "Take a sip of water. Then decide whether you need a pause or a tiny first step.",
+      "Put both feet on the floor and notice what’s supporting your weight.",
+      "Look around and name three colours you can see. Then look back at your next step.",
+      "Rest your eyes on something across the room for a few moments.",
+      "If you’ve been sitting still, stand up or stretch in a way that feels comfortable.",
+      "Pause and check if you’re hungry, thirsty, cold, or uncomfortable. Address one thing if you can.",
+      "Put your hand on the desk and notice its texture for a few seconds.",
+      "Take a brief quiet break. Choose a small action to return to before you step away.",
+      "Step into a different room for a moment, then come back and reread your next step.",
+      "If you can, lower the noise around you for a few minutes and let yourself settle.",
+      "Swap your grip or change your posture. See whether the new position feels easier.",
+      "Notice one sound nearby and one further away. Give yourself a moment before choosing.",
+      "Let your hands rest in your lap and take a moment to decide what would help right now.",
+      "Say “This is a hard moment” to yourself. Choose an action small enough for the moment you’re in.",
+      "Set a gentle reminder to check in after a break. Let the reminder hold the decision for now.",
+      "If a task feels too intense, spend one minute on a familiar chore and check in again.",
+      "Look outside for a moment if there’s a window nearby. Name one thing you notice.",
+      "Give yourself permission to pause. Leave a short note about where you’ll pick up.",
+      "Take a few moments with a warm or cool drink. Notice the temperature before moving on.",
+
+      // Working with time
+      "Use a visible five-minute timer so you can see how much time is left.",
+      "Estimate how long the first step will take, then time it once to learn what’s realistic.",
+      "Choose a specific start time in the next ten minutes. Set one reminder for it.",
+      "Make a plan for the next ten minutes on paper. Leave yourself a minute to switch tasks.",
+      "Schedule one short block for a task and give it a specific first action.",
+      "If you have five minutes to spare, spend one minute getting the next task ready.",
+      "Write a stopping time before you start so the task has an edge.",
+      "Add a buffer before your next appointment. Choose a task that fits the time left.",
+      "When you set a reminder, include the action in its name, like “send the draft.”",
+      "Use the next natural break, like finishing lunch, as a cue to check your list.",
+      "Check how long you have before your next commitment. Pick something you can pause easily.",
+      "Spend one minute planning and the next two minutes trying the plan.",
+      "Try a short countdown for getting ready. Put the first thing you need by the door.",
+      "If you’re switching tasks, give yourself a minute to close, save, and reset.",
+      "Pick a time to check messages so you can focus on one thing until then.",
+      "If your timer goes off mid-step, write where you stopped before moving on.",
+      "Set a reminder for a deadline a little before the last possible moment.",
+      "Name a mini milestone you can reach before your next break.",
+      "Put an estimated time beside two tasks. Pick the one that fits the window you have.",
+
+      // Making it easier or more interesting
+      "Turn one tiny chore into a game. See how many items you can put away in a minute.",
+      "Make the first pass deliberately rough. You can polish one part later if it needs it.",
+      "Speak the start of a draft out loud and use dictation if typing feels slow.",
+      "Read one tricky sentence aloud. Listen for the part you need to understand.",
+      "Pair a repetitive chore with one favourite song or an audiobook chapter.",
+      "Use a template for the next thing you need to write. Fill in one blank.",
+      "Highlight just one sentence or detail you want to remember.",
+      "Try a different format for a few minutes. Turn a paragraph into bullets or a list into a sketch.",
+      "Keep a small reward in mind, like making a tea after you finish one step.",
+      "Pick a colour you like and use it to mark the one thing you’re working on.",
+      "Group two similar actions, like two quick messages, so you can reuse the same setup.",
+      "Do one step standing or walking if the task and your space allow it.",
+      "Name the boring task something specific and playful, like “rescue the cups.”",
+      "Put on one familiar playlist and make the first track your cue to start.",
+      "Make a small shortcut for something you repeat, like saving a reply as a draft template.",
+      "Test one idea with the supplies you already have. Leave shopping or upgrades for later.",
+      "Let yourself skip ahead to a part you’re curious about. Make one small note there.",
+      "Tick a checkbox for one action you’ve already done today.",
+      "If the task feels dull, give yourself a small constraint, like a three-line outline.",
+
+      // Getting support and clarity
+      "Draft a short message asking someone to confirm what they need from you.",
+      "Ask a friend if they can work quietly alongside you for ten minutes.",
+      "Write down exactly what you’re waiting for and who might have it.",
+      "Ask for one example if you’re unsure what a finished version should look like.",
+      "Make a note of the one question that would clear up the most uncertainty.",
+      "Send a brief progress update if someone is waiting. Include your next step or a time to check in.",
+      "Ask someone you trust to help you choose between two realistic options.",
+      "If you need help, name a specific piece someone could take on.",
+      "Look at the last message or brief about this task. Highlight the actual request.",
+      "Tell a friend which tiny step you’re about to try, if saying it out loud would help.",
+      "If the instructions are unclear, write your best understanding and ask the person to confirm it.",
+      "Choose a part you can safely do while you wait for an answer.",
+      "Ask which of two competing deadlines comes first if someone else set them.",
+      "Check whether there’s already a checklist or example you can follow.",
+      "If you’re stuck on a tool, write the exact step or error you’d like help with.",
+      "Ask someone to show you the first move, then try the next one yourself.",
+      "If a commitment needs to move, draft a message with a specific new time.",
+      "Give someone a simple choice if you need their input, like “Tuesday or Thursday?”",
+      "For a shared task, write down who is doing the next action and when you’ll check in.",
+      "If you need accountability, agree on a short check-in time with someone willing to help.",
+
+      // Restarting, stopping, and making progress visible
+      "Save what you have and leave a note that starts with “Next time I’ll…”",
+      "Reopen the task and read only the last line you wrote to find your place.",
+      "If you missed a planned start, pick a fresh time from the time you have now.",
+      "Move a finished item to Completed so you can see the progress you made.",
+      "Turn one imperfect result into a usable version. Choose the one change that matters most.",
+      "Check whether you’ve already met your finish line. If you have, mark it done.",
+      "Save the next link or page you’ll need so it’s easy to reopen later.",
+      "For a project you paused, list one thing that’s ready and one thing you need next.",
+      "Take one almost-finished task and do its last action, like saving, sending, or putting it away.",
+      "Use the first minute back from a break to read your previous note and start one line.",
+      "If your approach feels stalled, try a smaller version of the same task for a minute.",
+      "Give an unfinished draft a clear filename so you can find it tomorrow.",
+      "Put the next action where you’ll see it first when you return.",
+      "If a task is done enough for its purpose, move any extra polish to a separate optional task.",
+      "Record one thing that helped you get started so you can try it again later.",
+      "If you’re out of energy, choose a clean stopping point and write down where it is.",
+      "Try a quick review of just one part you’ve finished. Then decide if it needs another pass.",
+      "Give an old task a fresh start by rewriting it as one action you can take today.",
+      "Note one small thing you moved forward, even if the whole task is still open.",
+      "Put one thing back where it belongs so your next session is easier to begin."
+    ];
+
+    const tip = document.querySelector('#tip');
+    const button = document.querySelector('#draw-tip');
+    let deck = [];
+    let previousTip;
+
+    function shuffleTips() {
+      const shuffled = [...tips];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      // Keep the last tip from repeating at the start of the next round.
+      const last = shuffled.length - 1;
+      if (shuffled[last] === previousTip) {
+        [shuffled[0], shuffled[last]] = [shuffled[last], shuffled[0]];
+      }
+      return shuffled;
+    }
+
+    function showTip() {
+      if (deck.length === 0) deck = shuffleTips();
+      previousTip = deck.pop();
+      tip.textContent = previousTip;
+    }
+
+    showTip();
+    button.addEventListener('click', showTip);
+  </script>
+</body>
+</html>
