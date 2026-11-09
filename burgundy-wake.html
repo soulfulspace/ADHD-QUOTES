@@ -117,10 +117,11 @@ function lipOffset(v, sourceHeight, currentHeight, limit) {
 }
 
 function createWakeLoop(source, width, rig, atlas) {
-  const { region, head, hand, eyes, mouth, lips } = rig;
+  const { region, head, hand, eyes, mouth, lips, jaw } = rig;
   const [left, top, patchWidth, patchHeight] = region;
   const eyelids = eyes.map(shape);
   const yawnMouth = shape(mouth);
+  const { left: jawLeft, right: jawRight, top: jawTop, chin, depth } = jaw;
   const features = [...eyelids, yawnMouth];
   const yawnFrame = new Uint8ClampedArray(source);
   const yawnPixel = new Uint8ClampedArray(4);
@@ -168,10 +169,17 @@ function createWakeLoop(source, width, rig, atlas) {
     for (const { x, y, headWeight, handWeight, feature } of pixels) {
       const dx = x - head[0];
       const dy = y - head[1] - 55;
-      const sx = x + (headCosOffset * dx + headSin * dy) * headWeight
+      const headX = x + (headCosOffset * dx + headSin * dy) * headWeight
         - handLift * rig.handShift[0] * handWeight;
-      const sy = y + (-headSin * dx + headCosOffset * dy + yawn * 3.5 + breathing * 1.1) * headWeight
+      const headY = y + (-headSin * dx + headCosOffset * dy + yawn * 3.5 + breathing * 1.1) * headWeight
         - handLift * rig.handShift[1] * handWeight;
+      // Hinge the lower face with the yawn while anchoring the cheeks and neck.
+      const jawWidth = smooth((headX - jawLeft) / 56) * smooth((jawRight - headX) / 36);
+      const jawLength = smooth((headY - jawTop) / (chin - jawTop))
+        * (1 - smooth((headY - chin - 9) / 34));
+      const jawDrop = yawn * depth * jawWidth * jawLength * (1 - handWeight);
+      const sx = headX - jawDrop * 0.11;
+      const sy = headY - jawDrop;
       const index = ((y - top) * patchWidth + x - left) * 4;
 
       if (!feature) {
@@ -261,7 +269,8 @@ const rig = {
   handShift: [-5, -6],
   eyes: [[312, 205, 26, 14, -0.23], [382, 186, 25, 14, -0.30]],
   mouth: [365, 243, 27, 42, -0.10],
-  lips: [13, 23, 40]
+  lips: [13, 23, 40],
+  jaw: { left: 278, right: 414, top: 247, chin: 287, depth: 12 }
 };
 
 if (typeof document !== 'undefined') start().catch(() => {});
