@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="300 original quotes about confidence, creativity, soft strength, and more.">
+  <meta name="author" content="SoulfulSpace">
+  <title>Burgundy Quotes · SoulfulSpace</title>
+  <style>
+    /* Symphonie CAT by Peter Wiegel, SIL OFL 1.1. See burgundy-quotes/OFL.txt. */
+    @font-face {
+      font-family: "Symphonie CAT";
+      src: url("burgundy-quotes/SymphonieCAT.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: dark;
+      --card: #7d0303;
+      --panel: #961313;
+      --button: #000;
+      --ink: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .widget {
+      display: grid;
+      gap: 10px;
+      width: min(100%, 470px);
+      margin-inline: auto;
+      padding: clamp(12px, 5vw, 20px);
+      border-radius: 12px;
+      background: var(--card);
+      text-align: center;
+    }
+
+    .topics {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-self: end;
+      max-width: 100%;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    select,
+    button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 7px;
+      color: inherit;
+      background: var(--button);
+      font: 650 12px/1.25 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    select {
+      max-width: 100%;
+      min-width: 0;
+      padding: 5px 8px;
+    }
+
+    blockquote {
+      display: grid;
+      place-items: center;
+      min-height: 130px;
+      margin: 0;
+      padding: 12px clamp(12px, 6vw, 25px);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .quote {
+      margin: 0;
+      font: 400 clamp(30px, 8vw, 46px)/1.19 "Symphonie CAT", "Snell Roundhand", "Segoe Script", cursive;
+      overflow-wrap: anywhere;
+      text-wrap: balance;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.5fr);
+      gap: 6px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 6px 4px;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .55; cursor: default; }
+    button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
+
+    :is(button, select):focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    footer { font-size: 10px; font-weight: 600; line-height: 1.3; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="widget" aria-label="SoulfulSpace quotes">
+    <label class="topics">Topic
+      <select id="topic">
+        <option value="">All topics</option>
+      </select>
+    </label>
+
+    <blockquote>
+      <p class="quote" id="quote" role="status" aria-atomic="true">Let your ambition be as particular as your taste.</p>
+    </blockquote>
+
+    <div class="controls">
+      <button type="button" id="back" disabled>Back</button>
+      <button type="button" id="copy">Copy</button>
+      <button type="button" id="next">New quote</button>
+    </div>
+    <span class="sr-only" id="copy-status" role="status"></span>
+    <footer>@soulfulspace</footer>
+    <noscript>Turn on JavaScript to browse the quotes.</noscript>
+  </main>
+
+  <script>
+    const quotesByTopic = {
+      "Ambition": [
+        "A woman with a clear aim can make a quiet room pay attention.",
+        "Build the life that makes you look forward to an ordinary Tuesday.",
+        "Let your plans grow as large as your curiosity.",
+        "The first draft of your dream belongs on the calendar.",
+        "Your ambition can wear lipstick, work boots, or whatever gets her there.",
+        "Let your work become familiar with being seen.",
+        "The invitation you keep imagining might begin with an email you send.",
+        "Choose a goal that feels like yours when the room goes quiet.",
+        "Some dreams ask for a deadline and a little audacity.",
+        "Put your name on work you would be proud to find in the world.",
+        "Speak your goal plainly enough that someone could help you reach it.",
+        "Take your big idea seriously enough to give it a small beginning.",
+        "Save room in your plans for how capable you might become.",
+        "Build something worth waking up curious about.",
+        "Let a little of your future into this week’s schedule.",
+        "The work you care about deserves a place on your best hours.",
+        "Aim for a life with enough room for your gifts and your mornings.",
+        "You can dream bigger and still take lunch.",
+        "An idea gets bolder every time you give it a real place to live.",
+        "Let your ambition be as particular as your taste.",
+        "Ask for the room where the decision gets made.",
+        "A good dream gives you something specific to practise.",
+        "Your future can be built from questions you are brave enough to ask.",
+        "Make something you would have loved to discover five years ago.",
+        "The door opens wider when you arrive with something to say."
+      ],
+      "Boundaries": [
+        "I can love people and leave before I am worn out.",
+        "A clear answer is a kindness I can offer us both.",
+        "My time belongs to me before it belongs on anyone’s list.",
+        "I can wait until tomorrow to decide what deserves a yes.",
+        "A quiet no can keep a whole afternoon intact.",
+        "The limits I honour make my generosity feel like a choice.",
+        "I can leave a message unanswered until I have words for it.",
+        "I am allowed to keep some of my life off the table.",
+        "I can be gracious and specific about what I need.",
+        "My calendar can hold a little room with my name on it.",
+        "I can care about someone’s disappointment and keep my answer.",
+        "An honest pause gives me time to hear what I want.",
+        "I can decline with warmth and carry on with my evening.",
+        "I choose the pace at which I let people know me.",
+        "A promise to myself deserves the courtesy of a reminder.",
+        "I am allowed to leave a conversation that keeps making me smaller.",
+        "I can share what I have the energy to give.",
+        "My availability can change when my life changes.",
+        "A kind voice can deliver a firm decision.",
+        "I can ask for notice before I give away a morning.",
+        "I am allowed to enjoy my plans for a quiet evening.",
+        "People who value my company can learn to value my time.",
+        "My yes feels better when I have room to choose it.",
+        "I can close the door gently and still close it all the way.",
+        "There is freedom in saying exactly what I mean."
+      ],
+      "Confidence": [
+        "I can enter the room before my confidence catches up.",
+        "A woman who trusts her taste saves herself a great deal of time.",
+        "My ideas can survive being spoken in my own voice.",
+        "I can make eye contact with the life I want.",
+        "Let the compliment land before you start explaining it away.",
+        "I can make a good decision with the information I have.",
+        "The way I do things is allowed to become my signature.",
+        "I can be new here and have something worth saying.",
+        "My posture can remember what my nerves forget.",
+        "I have earned the pleasure of calling my work good.",
+        "I can let my excitement show when something matters to me.",
+        "Experience is made of first tries I eventually stopped counting.",
+        "The room can make room for the way I speak.",
+        "Wear the thing you were saving for a more confident version of you.",
+        "I am allowed to have a favourite thing about myself.",
+        "My point can stand in the room without a long introduction.",
+        "I can be seen in the middle of becoming.",
+        "A good question can carry as much authority as a good answer.",
+        "I can take a moment to think and then speak clearly.",
+        "Let yourself receive the credit you would gladly give a friend.",
+        "My voice has a place in a conversation about my future.",
+        "I can trust the part of me that notices what others miss.",
+        "I get to decide which advice fits the woman I am becoming.",
+        "I can be proud of what took me a long time to learn.",
+        "There is elegance in knowing what I bring."
+      ],
+      "Creativity": [
+        "Give the unfinished idea a corner of the table.",
+        "My imagination deserves supplies within easy reach.",
+        "A sketch can hold a thought until I find the right words.",
+        "Follow the detail that keeps asking for a closer look.",
+        "I can make things whose only job is to delight me.",
+        "My taste is built from the small things I stop to notice.",
+        "Give the strange little idea one honest afternoon.",
+        "Begin with a colour that makes you want to stay.",
+        "I can learn a great deal from a beautiful mistake.",
+        "The idea in the margin might deserve the whole page.",
+        "A good creative day can begin with rearranging three things.",
+        "I can make a rough version with a very clear feeling.",
+        "Put two things you love beside each other and see what happens.",
+        "My hands can find a way in while my mind is still making plans.",
+        "Let the materials surprise you before you ask them to behave.",
+        "Some ideas arrive after you have folded the laundry.",
+        "I can make room for beauty in the useful things I build.",
+        "My curiosity can take the project somewhere I never planned.",
+        "An ordinary afternoon can be the beginning of a body of work.",
+        "I can make something tender with a steady hand.",
+        "Keep the part that makes you smile when you look back at it.",
+        "Art can start with the wish to see one thing differently.",
+        "I can change the ending once I know the story better.",
+        "Give yourself a small canvas and permission to fill it.",
+        "The work begins to sound like you when you listen to your own choices."
+      ],
+      "Everyday Joy": [
+        "Light the good candle on a day with ordinary plans.",
+        "A Tuesday can hold a dress you love and nowhere special to go.",
+        "Let the first sip of something warm have your whole attention.",
+        "Joy can be as modest as a clean pillowcase at the end of the day.",
+        "Open the window when the evening smells like rain.",
+        "Put your favourite flowers where you actually sit.",
+        "There is room in a serious life for a ridiculous little dance.",
+        "Take the longer walk if the jasmine is in bloom.",
+        "Keep a song that makes the kitchen feel like yours.",
+        "The softest hours sometimes arrive without an appointment.",
+        "A lovely moment can fit between two errands.",
+        "Let the fruit you brought home be the best part of lunch.",
+        "Set the table for yourself with the plate you like.",
+        "Notice the light before you rush past it.",
+        "The day can get better in the time it takes to change into something soft.",
+        "A small pleasure is a good reason to put the phone down.",
+        "Make the coffee and take it to the sunniest chair.",
+        "I can let one good thing be the whole story for a minute.",
+        "My favourite days leave a little time for looking up.",
+        "Take a photo of what you want to remember from today.",
+        "The right song can turn putting things away into a small celebration.",
+        "Buy the peach that smells like summer if you want the peach.",
+        "Take delight seriously enough to leave time for it.",
+        "Let a familiar place surprise you with one new detail.",
+        "Some of the good things are already here, waiting to be noticed."
+      ],
+      "Friendship": [
+        "I want friendships where we can both be the woman with good news.",
+        "A friend who remembers the small things makes the world feel less hurried.",
+        "Send the message while the memory is making you laugh.",
+        "We can have different seasons and still make room for one another.",
+        "Good friendship leaves space for the unpolished version of the story.",
+        "There is a particular kind of joy in being understood mid-sentence.",
+        "Make a plan with the friend whose company lets you breathe.",
+        "I can ask for company on an ordinary day.",
+        "Some women bring a little more courage into every room they share.",
+        "I want to speak well of my friends when they are out of earshot.",
+        "Ask the second question when your friend says she is fine.",
+        "Let the people you love hear what you admire about them.",
+        "I can celebrate her good news with my whole heart.",
+        "The women I trust can hear my ambition and hand it back to me larger.",
+        "Offer the kind of help that can fit into someone’s real afternoon.",
+        "Shared laughter can make even the shortest visit feel generous.",
+        "Let a friend see your work before you have made it tidy.",
+        "There is comfort in having someone who knows how you take your tea.",
+        "I can build a friendship one honest invitation at a time.",
+        "A good friend can let you change your mind in peace.",
+        "I want people who make me curious about their lives.",
+        "Sometimes the loving thing is to make a date and show up.",
+        "It feels good to be known by women who also let you grow.",
+        "I can ask for a listening ear when advice would be too much.",
+        "A small circle can hold a great deal of warmth."
+      ],
+      "Growth": [
+        "The habit you keep can become a kindness you remember.",
+        "I am allowed to learn something twice before it stays.",
+        "A better question can change the shape of the whole problem.",
+        "The person I am becoming gets to benefit from my practice today.",
+        "I can thank an old habit for its help and choose a better one.",
+        "Growth can look like keeping a promise that used to scare me.",
+        "Some progress shows up as a quicker return to yourself.",
+        "I can learn from a mistake and still enjoy my dinner.",
+        "My pace can change with what the week is asking of me.",
+        "A familiar mistake can become a useful signpost.",
+        "I can be both proud of my progress and interested in improving.",
+        "What feels awkward today may one day feel like a skill I own.",
+        "The lesson becomes mine when I use it in an ordinary moment.",
+        "I can notice change in the things I handle with more care now.",
+        "Let one good choice teach you how to make the next.",
+        "The people I admire were beginners in rooms I never saw.",
+        "I can make a small adjustment and give it time to work.",
+        "The work of changing is allowed to include some enjoyable days.",
+        "I learn what fits by living in it for a while.",
+        "A little honesty makes the next decision much easier to see.",
+        "I can keep the wisdom and give myself a different routine.",
+        "Some seasons are for practising the things I once wished I could do.",
+        "I can let my standards grow along with my capacity.",
+        "Getting better can feel like becoming a little more at home.",
+        "I can give the work time to become familiar."
+      ],
+      "New Beginnings": [
+        "The first day can be an ordinary day with one deliberate choice.",
+        "Leave a little space for the beginning to surprise you.",
+        "A fresh page is useful even halfway through the week.",
+        "I can start with the pieces that are already in my hands.",
+        "A change of heart can be a very good compass.",
+        "I can make a new plan on the same kitchen table.",
+        "Start with one thing that will make tomorrow feel different.",
+        "I can arrive a little uncertain and make myself at home slowly.",
+        "Begin the thing you keep describing in the future tense.",
+        "A fresh start can fit inside the next ten minutes.",
+        "The new version of my life can keep what I still love.",
+        "I can choose a different route through a familiar day.",
+        "There is something brave about buying the beginner’s supplies.",
+        "I can give a new routine one small place to take root.",
+        "The first step can feel like opening the curtains.",
+        "A clean start can be a decision made at an untidy desk.",
+        "I can be curious about a future I have never lived.",
+        "Let the first try be a little introduction to what comes next.",
+        "A new chapter can begin while the last one is still on your mind.",
+        "I can pack light for the part of my life I am entering.",
+        "Give the unfamiliar day one thing to look forward to.",
+        "My future has room for interests I have yet to discover.",
+        "The smallest real beginning makes a dream easier to return to.",
+        "I can put my hand on the doorknob before I know the whole room.",
+        "Let the first morning be as gentle as it needs to be."
+      ],
+      "Rest": [
+        "I can turn down the noise and keep the light on.",
+        "My evening is allowed to have a soft landing.",
+        "Rest can be a way of coming home to my own pace.",
+        "The body carrying my plans deserves a comfortable chair.",
+        "I can leave a little blank space between things I care about.",
+        "My to-do list can wait beside a cup of tea.",
+        "I am allowed to finish the day while some things are unfinished.",
+        "A quiet hour belongs in a full life.",
+        "Some ideas need a walk and a long look at the sky.",
+        "I can stop while I still have a little kindness left for myself.",
+        "The world can keep moving while I sit down for a moment.",
+        "Give yourself a slower morning when you have the choice.",
+        "I can leave tomorrow a note and let tonight be tonight.",
+        "My energy is worth tending before it runs out.",
+        "There is a kind of clarity that comes after a decent sleep.",
+        "Let the evening be as simple as a meal and a lamp.",
+        "I can choose the thing that makes my shoulders settle.",
+        "An unhurried meal is a good way to be here.",
+        "I can make room for the silence that helps me hear myself.",
+        "Put something comfortable within reach of your tiredest hour.",
+        "My pace belongs to the day I am actually having.",
+        "Let the last task of the evening be putting yourself at ease.",
+        "I can go to bed proud of something small.",
+        "Some plans get better when they spend a night on the table.",
+        "I can set the work down with care and pick it up with care."
+      ],
+      "Self-Worth": [
+        "I can offer myself the care I would make time for in a friend.",
+        "My life deserves my attention on the days that look ordinary.",
+        "I am allowed to want good things before I know how to get them.",
+        "The woman in the mirror deserves a kind hello.",
+        "I can have a difficult day and speak to myself with affection.",
+        "My needs can come up in a conversation about my own life.",
+        "I can treat my enjoyment as a reason to keep something.",
+        "There is dignity in taking the time to understand what hurts.",
+        "I am allowed to like my own company.",
+        "My most private hopes deserve a place where I can name them.",
+        "I can remember who I was with tenderness and good humour.",
+        "I deserve clothes that feel comfortable on the body I have today.",
+        "My mistakes can sit beside everything else that is true about me.",
+        "I am allowed to make decisions that make my life feel more like mine.",
+        "I can be generous with the woman I am on a difficult morning.",
+        "My interests are worth following even when they are hard to explain.",
+        "I can choose the seat that gives me enough room.",
+        "My life is worthy of the little rituals that make it feel cared for.",
+        "I can believe the good things I know about myself on an uncertain day.",
+        "I am allowed to receive help while I am still figuring things out.",
+        "The parts of myself I keep quiet can be worth getting to know.",
+        "I can forgive myself for the things I understood late.",
+        "I deserve to feel welcome in the home I make for myself.",
+        "Let yourself take up the time it takes to answer honestly.",
+        "I can be tender with myself and still expect good things."
+      ],
+      "Soft Strength": [
+        "A gentle voice can be steady enough to change a conversation.",
+        "I can be moved by a thing and still make a clear decision.",
+        "There is courage in asking for a moment to collect yourself.",
+        "A soft heart can hold a very firm line.",
+        "I can keep my warmth when I ask to be treated well.",
+        "Grace has room for a breath before an answer.",
+        "The woman who starts over quietly is still doing something brave.",
+        "I can let care guide the decisions that ask the most of me.",
+        "My strength can sound like telling the truth in a steady voice.",
+        "A tender response can take more nerve than a sharp one.",
+        "I can stand beside someone without taking on the whole weight.",
+        "Let the way you recover be part of what makes you strong.",
+        "I can be thoughtful even when I need to be quick.",
+        "There is steadiness in doing one thing well on a hard day.",
+        "A difficult truth can be carried with both hands and a little care.",
+        "I can hold my ground in the tone that feels like mine.",
+        "I can protect the good parts of myself without hardening them.",
+        "A patient woman can still know when it is time to move.",
+        "Kindness can have a spine and a clear schedule.",
+        "My softness is allowed to have good judgement.",
+        "I can ask for gentleness and offer it in the same breath.",
+        "It takes practice to leave a hard moment with your warmth intact.",
+        "I can choose words that will still feel right tomorrow.",
+        "There is quiet power in a woman who can steady herself.",
+        "I can do brave things without raising my voice."
+      ],
+      "Taking Action": [
+        "Give the idea ten minutes and a page with today’s date.",
+        "Start with the part your hands already know how to do.",
+        "I can open the document before I have the right first sentence.",
+        "Let a small completed thing be the beginning of momentum.",
+        "Make the next move small enough to do before the tea cools.",
+        "I can turn a worry into one question I am ready to ask.",
+        "Choose the step that would make the rest a little easier.",
+        "A plan feels different once you put one thing in motion.",
+        "I can begin with my feet on the floor and one clear instruction.",
+        "Make the list short enough to remember while you walk to the kitchen.",
+        "Take the action that will give tomorrow’s you something to work with.",
+        "Put the first appointment on the calendar while you are thinking about it.",
+        "A rough attempt can show you what a perfect plan could never tell you.",
+        "I can do one useful thing while I wait for the answer.",
+        "Let the first round be about finding your way around.",
+        "I can start at the page that makes the most sense.",
+        "Give the task a verb and make it small enough to begin.",
+        "A little progress is easier to see when I leave myself a note.",
+        "I can send the simple message and free up a thought.",
+        "Put the tool you need where your hand can find it.",
+        "I can work for the length of one song and see where I am.",
+        "Decide what finished looks like before you begin polishing.",
+        "I can move one thing forward and call that a real start.",
+        "Make a little space on the table and bring the idea over.",
+        "The next step is allowed to be the smallest thing that changes the day."
+      ]
+    };
+    const allQuotes = Object.values(quotesByTopic).flat();
+    const storageKey = 'soulfulspace-burgundy-quotes';
+    const topic = document.querySelector('#topic');
+    const quote = document.querySelector('#quote');
+    const back = document.querySelector('#back');
+    const copy = document.querySelector('#copy');
+    const next = document.querySelector('#next');
+    const copyStatus = document.querySelector('#copy-status');
+    let currentQuote;
+    let deck = [];
+    let quoteHistory = [];
+    let copyTimer;
+
+    function readPreferences() {
+      try {
+        return JSON.parse(sessionStorage.getItem(storageKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function renderQuote() {
+      quote.textContent = currentQuote;
+      back.disabled = quoteHistory.length === 0;
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify({ topic: topic.value, lastQuote: currentQuote }));
+      } catch {
+        // The widget can still shuffle when embedded storage is blocked.
+      }
+    }
+
+    function shuffledQuotes(previousQuote) {
+      const shuffled = [...(quotesByTopic[topic.value] || allQuotes)];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      const last = shuffled.length - 1;
+      if (shuffled[last] === previousQuote) {
+        [shuffled[0], shuffled[last]] = [shuffled[last], shuffled[0]];
+      }
+      return shuffled;
+    }
+
+    function newQuote() {
+      if (!deck.length) deck = shuffledQuotes(currentQuote);
+      if (currentQuote) quoteHistory.push(currentQuote);
+      currentQuote = deck.pop();
+      renderQuote();
+    }
+
+    function resetTopic(previousQuote) {
+      deck = shuffledQuotes(previousQuote);
+      quoteHistory = [];
+      currentQuote = undefined;
+      newQuote();
+    }
+
+    function previousQuote() {
+      if (!quoteHistory.length) return;
+      currentQuote = quoteHistory.pop();
+      renderQuote();
+      if (back.disabled && document.activeElement === back) next.focus();
+    }
+
+    function legacyCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.readOnly = true;
+      textarea.className = 'sr-only';
+      textarea.style.position = 'fixed';
+      const focused = document.activeElement;
+      document.body.append(textarea);
+      textarea.select();
+      try {
+        return document.execCommand('copy');
+      } catch {
+        return false;
+      } finally {
+        textarea.remove();
+        focused?.focus({ preventScroll: true });
+      }
+    }
+
+    async function copyQuote() {
+      const text = currentQuote;
+      let copied = false;
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch {
+        // Some embed hosts restrict the Clipboard API.
+      }
+      if (!copied) copied = legacyCopy(text);
+
+      clearTimeout(copyTimer);
+      if (copied) {
+        copy.textContent = 'Copied';
+        copyStatus.textContent = 'Quote copied to clipboard.';
+      } else {
+        const range = document.createRange();
+        range.selectNodeContents(quote);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        copy.textContent = 'Selected';
+        copyStatus.textContent = 'Quote selected. Use your device’s copy command.';
+      }
+      copyTimer = setTimeout(() => {
+        copy.textContent = 'Copy';
+        copyStatus.textContent = '';
+      }, 1800);
+    }
+
+    for (const name of Object.keys(quotesByTopic)) {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      topic.append(option);
+    }
+
+    const saved = readPreferences();
+    if (Object.hasOwn(quotesByTopic, saved.topic)) topic.value = saved.topic;
+    topic.addEventListener('change', () => resetTopic(currentQuote));
+    back.addEventListener('click', previousQuote);
+    next.addEventListener('click', newQuote);
+    copy.addEventListener('click', copyQuote);
+    resetTopic(saved.lastQuote);
+  </script>
+</body>
+</html>
